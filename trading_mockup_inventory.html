@@ -8,6 +8,8 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
+        <button class="menu-toggle" aria-label="Open menu">☰</button> <!-- Hamburger icon -->
+
     <!-- Sidebar will be loaded into this div -->
     <div class="sidebar">
         <!-- Content from nav.html will be placed here by jQuery.load() -->
@@ -187,7 +189,32 @@
     </div>
 
 <script>
+    
+        document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.querySelector('.menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    const mainContent = document.querySelector('.main-content'); // Optional: to push content
+
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+            // Optional: if you want to create an overlay or prevent scrolling on main content when sidebar is open
+            // document.body.classList.toggle('sidebar-open-overlay');
+        });
+
+        // Optional: Close sidebar when clicking outside of it (on main content)
+        if (mainContent) {
+            mainContent.addEventListener('click', function() {
+                if (sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        }
+    }
+});
 $(document).ready(function() {
+
+
     // Load sidebar using the class selector
     $('.sidebar').load('nav.html')
 

@@ -214,22 +214,10 @@
 </head>
 
 <body>
+        <button class="menu-toggle" aria-label="Open menu">☰</button> <!-- Hamburger icon -->
+
     <div class="sidebar">
-        <h2>Trading System</h2>
-        <ul>
-            <li><a href="#" id="nav-dashboard">Dashboard</a></li>
-            <li><a href="trading_mockup_customers.html" id="nav-customers">ลูกค้า</a></li>
-            <li><a href="https://www.w3schools.com" id="nav-products">สินค้า</a></li>
-            <li><a href="mockup_trding_quotations.html" id="nav-quotations" class="active">ใบเสนอราคา</a></li>
-            <li><a href="#" id="nav-customer-pos">คำสั่งซื้อลูกค้า</a></li>
-            <li><a href="#" id="nav-supplier-pos">คำสั่งซื้อ Supplier</a></li>
-            <li><a href="#" id="nav-inventory">สต็อก</a></li>
-            <li><a href="#" id="nav-deliveries">การจัดส่ง</a></li>
-            <li><a href="#" id="nav-invoices">ใบแจ้งหนี้</a></li>
-            <li><a href="#" id="nav-cashflow">Cash Flow</a></li>
-            <li><a href="#" id="nav-reports">รายงาน</a></li>
-            <li><a href="#" id="nav-settings">ตั้งค่า</a></li>
-        </ul>
+
     </div>
 
     <div class="main-content">
@@ -427,6 +415,28 @@
     </div>
 
     <script>
+            document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.querySelector('.menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    const mainContent = document.querySelector('.main-content'); // Optional: to push content
+
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+            // Optional: if you want to create an overlay or prevent scrolling on main content when sidebar is open
+            // document.body.classList.toggle('sidebar-open-overlay');
+        });
+
+        // Optional: Close sidebar when clicking outside of it (on main content)
+        if (mainContent) {
+            mainContent.addEventListener('click', function() {
+                if (sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        }
+    }
+});
         $(document).ready(function () {
             $('.sidebar').load('nav.html');
 

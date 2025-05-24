@@ -1,168 +1,20 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trading System Mockup - Customer POs</title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="style.css">
     <style>
-        /* CSS Styles (เหมือนเดิมจากตัวอย่างก่อนหน้า - สามารถ copy มาวางได้เลย) */
-        body {
-            font-family: 'Tahoma', 'Segoe UI', sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            background-color: #f0f2f5;
-            color: #333;
-            display: flex;
-            min-height: 100vh;
-        }
 
-        .main-content {
-            flex-grow: 1;
-            padding: 20px 30px;
-            overflow-y: auto;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #bdc3c7;
-            margin-bottom: 20px;
-        }
-        .header h1 {
-            font-size: 1.8em;
-            color: #1a5ca3;
-            margin: 0;
-        }
-        .header .user-info {
-            font-size: 0.9em;
-        }
-        .btn {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: background-color 0.2s ease;
-        }
-        .btn-primary {
-            background-color: #3498db;
-            color: white;
-        }
-        .btn-primary:hover {
-            background-color: #2980b9;
-        }
-        .btn-secondary {
-            background-color: #ecf0f1;
-            color: #34495e;
-            border: 1px solid #bdc3c7;
-        }
-        .btn-secondary:hover {
-            background-color: #d5dbdb;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        th {
-            background-color: #f2f2f2;
-            font-weight: 600;
-            color: #555;
-        }
-        tr:hover {
-            background-color: #f9f9f9;
-        }
-        .action-buttons a, .action-buttons button {
-            margin-right: 5px;
-            text-decoration: none;
-            padding: 5px 8px;
-        }
-
-        .form-section {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .form-section h3 {
-            margin-top: 0;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
-            font-size: 1.2em;
-            color: #333;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
-        .form-group input[type="text"],
-        .form-group input[type="number"],
-        .form-group input[type="file"],
-        .form-group select,
-        .form-group textarea {
-            width: calc(100% - 22px);
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 0.95em;
-        }
-        .form-group textarea {
-            min-height: 80px;
-            resize: vertical;
-        }
-        .form-row {
-            display: flex;
-            gap: 20px;
-        }
-        .form-row .form-group {
-            flex: 1;
-        }
-        .form-group input[type="checkbox"] {
-            width: auto;
-            margin-right: 8px;
-            vertical-align: middle;
-        }
-
-
-        .hidden {
-            display: none;
-        }
-
-        .filter-bar {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .filter-bar input, .filter-bar select {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-   
     </style>
 </head>
+
 <body>
+    <button class="menu-toggle" aria-label="Open menu">☰</button> <!-- Hamburger icon -->
+
     <!-- Container for the sidebar -->
     <div class="sidebar">
     </div>
@@ -238,7 +90,7 @@
                 </tbody>
             </table>
             <div style="text-align: center; margin-top: 20px;">
-                [Pagination: << < 1 2 3 > >> ]
+                [Pagination: << < 1 2 3> >> ]
             </div>
         </div>
 
@@ -275,7 +127,7 @@
                             <!-- Could be a select/lookup if QTN is accepted -->
                         </div>
                     </div>
-                     <div class="form-group">
+                    <div class="form-group">
                         <label for="cust-po-file">แนบไฟล์ Customer PO (PDF, JPG, PNG)</label>
                         <input type="file" id="cust-po-file" name="cust-po-file" accept=".pdf,.jpg,.jpeg,.png">
                         <small id="current-cust-po-file" class="form-text text-muted"></small>
@@ -284,7 +136,7 @@
 
                 <div class="form-section">
                     <h3>สถานะและการดำเนินการ</h3>
-                     <div class="form-row">
+                    <div class="form-row">
                         <div class="form-group">
                             <label for="cust-po-status">สถานะ PO</label>
                             <select id="cust-po-status" name="cust-po-status">
@@ -297,19 +149,23 @@
                         </div>
                         <div class="form-group">
                             <label for="cust-po-io-number">เลขที่ Internal Order (IO)</label>
-                            <input type="text" id="cust-po-io-number" name="cust-po-io-number" placeholder="(ระบบจะสร้างให้ หรือกรอกเอง)">
+                            <input type="text" id="cust-po-io-number" name="cust-po-io-number"
+                                placeholder="(ระบบจะสร้างให้ หรือกรอกเอง)">
                         </div>
                     </div>
                     <div class="form-group" id="create-io-section" style="margin-top:15px;">
-                         <button type="button" class="btn btn-primary" id="btn-create-io-from-po">สร้าง Internal Order (IO) จาก PO นี้</button>
-                         <small class="form-text text-muted" style="display:block; margin-top:5px;">(เมื่อสร้าง IO แล้ว สถานะ PO จะเปลี่ยนเป็น "กำลังดำเนินการ")</small>
+                        <button type="button" class="btn btn-primary" id="btn-create-io-from-po">สร้าง Internal Order
+                            (IO) จาก PO นี้</button>
+                        <small class="form-text text-muted" style="display:block; margin-top:5px;">(เมื่อสร้าง IO แล้ว
+                            สถานะ PO จะเปลี่ยนเป็น "กำลังดำเนินการ")</small>
                     </div>
                 </div>
 
-                 <div class="form-section">
+                <div class="form-section">
                     <h3>หมายเหตุ</h3>
                     <div class="form-group">
-                        <textarea id="cust-po-notes" name="cust-po-notes" rows="3" placeholder="รายละเอียดเพิ่มเติม หรือเงื่อนไขพิเศษจากลูกค้า"></textarea>
+                        <textarea id="cust-po-notes" name="cust-po-notes" rows="3"
+                            placeholder="รายละเอียดเพิ่มเติม หรือเงื่อนไขพิเศษจากลูกค้า"></textarea>
                     </div>
                 </div>
 
@@ -322,145 +178,181 @@
         </div>
 
         <!-- Placeholder for other pages like dashboard, customers, products etc. -->
-        <div id="dashboard-page" class="page-content hidden"><h2>Dashboard Content</h2></div>
-        <div id="customers-page" class="page-content hidden"><h2>Customers Content</h2><p>เนื้อหาหน้าลูกค้าจะโหลดที่นี่</p></div>
-        <div id="products-page" class="page-content hidden"><h2>Products Content</h2><p>เนื้อหาหน้าสินค้าจะโหลดที่นี่</p></div>
-        <div id="quotations-page" class="page-content hidden"><h2>Quotations Content</h2><p>เนื้อหาหน้าใบเสนอราคาจะโหลดที่นี่</p></div>
+        <div id="dashboard-page" class="page-content hidden">
+            <h2>Dashboard Content</h2>
+        </div>
+        <div id="customers-page" class="page-content hidden">
+            <h2>Customers Content</h2>
+            <p>เนื้อหาหน้าลูกค้าจะโหลดที่นี่</p>
+        </div>
+        <div id="products-page" class="page-content hidden">
+            <h2>Products Content</h2>
+            <p>เนื้อหาหน้าสินค้าจะโหลดที่นี่</p>
+        </div>
+        <div id="quotations-page" class="page-content hidden">
+            <h2>Quotations Content</h2>
+            <p>เนื้อหาหน้าใบเสนอราคาจะโหลดที่นี่</p>
+        </div>
         <!-- ... more placeholder divs for other pages ... -->
 
 
     </div>
 
-<script>
-$(document).ready(function() {
-    // Load sidebar
-    $('.sidebar').load('nav.html')
+    <script>
 
-    // --- Customer PO List Page ---
-    $('#btn-show-create-customer-po').on('click', function() {
-        $('.page-content').addClass('hidden'); // Hide list page
-        $('#create-edit-customer-po-page').removeClass('hidden');
-        $('#customer-po-form-title').text('สร้างคำสั่งซื้อลูกค้าใหม่');
-        $('#customer-po-form')[0].reset();
-        $('#customer-po-id').val('');
-        $('#current-cust-po-file').text('');
-        $('#create-io-section').removeClass('hidden'); // Show create IO button for new PO
-        $('#cust-po-io-number').prop('readonly', false); // Allow editing IO for new
-    });
+    document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.querySelector('.menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    const mainContent = document.querySelector('.main-content'); // Optional: to push content
 
-    $('#customer-po-table-body').on('click', '.btn-edit-customer-po', function(e) {
-        e.preventDefault();
-        var customerPoId = $(this).closest('tr').find('td:first-child').text();
-        alert('กำลังแก้ไข Customer PO: ' + customerPoId + ' (ฟังก์ชันนี้ต้องดึงข้อมูลจริง)');
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+            // Optional: if you want to create an overlay or prevent scrolling on main content when sidebar is open
+            // document.body.classList.toggle('sidebar-open-overlay');
+        });
 
-        $('.page-content').addClass('hidden'); // Hide list page
-        $('#create-edit-customer-po-page').removeClass('hidden');
-        $('#customer-po-form-title').text('แก้ไขคำสั่งซื้อลูกค้า #' + customerPoId);
-        $('#customer-po-id').val(customerPoId);
-
-        // --- Simulate loading data for CUST-PO-789 ---
-        if (customerPoId === 'CUST-PO-789') {
-            $('#cust-po-number').val('CUST-PO-789');
-            $('#cust-po-date').val('2023-10-28');
-            $('#cust-po-customer').val('cust001');
-            $('#cust-po-qtn-ref').val('QTN00122');
-            $('#cust-po-status').val('confirmed');
-            $('#current-cust-po-file').text('customer_po_789.pdf');
-            $('#cust-po-io-number').val('').prop('readonly', false); // No IO yet, editable
-            $('#create-io-section').removeClass('hidden');
-        } else if (customerPoId === 'CUST-PO-790') {
-            $('#cust-po-number').val('CUST-PO-790');
-            $('#cust-po-date').val('2023-10-29');
-            $('#cust-po-customer').val('cust002');
-            $('#cust-po-qtn-ref').val('');
-            $('#cust-po-status').val('processing');
-            $('#current-cust-po-file').text('xyz_order_form.jpg');
-            $('#cust-po-io-number').val('IO-2023-055').prop('readonly', true); // IO exists, read-only
-            $('#create-io-section').addClass('hidden'); // Hide create IO button
-        } else {
-            $('#customer-po-form')[0].reset();
-            $('#current-cust-po-file').text('');
-            $('#create-io-section').removeClass('hidden');
-            $('#cust-po-io-number').prop('readonly', false);
+        // Optional: Close sidebar when clicking outside of it (on main content)
+        if (mainContent) {
+            mainContent.addEventListener('click', function() {
+                if (sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+            });
         }
-    });
-
-    $('#customer-po-table-body').on('click', '.btn-view-customer-po', function(e) {
-        e.preventDefault();
-        var customerPoId = $(this).closest('tr').find('td:first-child').text();
-        alert('กำลังดู Customer PO: ' + customerPoId + ' (แสดงรายละเอียดแบบ Read-only)');
-    });
-
-
-    // --- Create/Edit Customer PO Page ---
-    $('#btn-cancel-customer-po').on('click', function() {
-        $('.page-content').addClass('hidden'); // Hide form page
-        $('#customer-po-list-page').removeClass('hidden');
-        $('#page-title').text('คำสั่งซื้อลูกค้า (Customer POs)');
-    });
-
-    $('#customer-po-form').on('submit', function(e) {
-        e.preventDefault();
-        var customerPoId = $('#customer-po-id').val();
-        var action = customerPoId ? 'แก้ไข' : 'เพิ่ม';
-
-        var formData = new FormData(this); // Use FormData for file uploads
-        console.log(`Customer PO Form Data (${action}):`);
-        for (var pair of formData.entries()) {
-            console.log(pair[0]+ ': ' + pair[1]);
-        }
-        // In a real app, send formData via AJAX
-
-        alert(`คำสั่งซื้อลูกค้า ${action}แล้ว! (ดู Console log)`);
-
-        $('.page-content').addClass('hidden'); // Hide form page
-        $('#customer-po-list-page').removeClass('hidden');
-        $('#page-title').text('คำสั่งซื้อลูกค้า (Customer POs)');
-        // In a real app, refresh the Customer PO list table here
-    });
-
-    // Handle file input display
-    $('#cust-po-file').on('change', function(){
-        var fileName = $(this).val().split('\\').pop();
-        if(fileName){
-            $('#current-cust-po-file').text('ไฟล์ที่เลือก: ' + fileName);
-        } else {
-            $('#current-cust-po-file').text('');
-        }
-    });
-
-    // Simulate Create IO button
-    $('#btn-create-io-from-po').on('click', function() {
-        var custPoNumber = $('#cust-po-number').val();
-        if (!custPoNumber) {
-            alert('กรุณากรอกเลขที่ PO ของลูกค้าก่อนสร้าง IO');
-            return;
-        }
-        var ioNumber = 'IO-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random() * 1000)).padStart(3, '0');
-        $('#cust-po-io-number').val(ioNumber).prop('readonly', true);
-        $('#cust-po-status').val('processing'); // Change status
-        $('#create-io-section').addClass('hidden'); // Hide button after creation
-        alert('สร้าง Internal Order: ' + ioNumber + ' สำหรับ PO: ' + custPoNumber + ' เรียบร้อยแล้ว (จำลอง)');
-        // In a real app, this would trigger a backend process to create an IO record
-    });
-
-    // Show/hide Create IO button based on status (example)
-    $('#cust-po-status').on('change', function() {
-        var status = $(this).val();
-        var ioNumber = $('#cust-po-io-number').val();
-        if ((status === 'confirmed' || status === 'pending') && !ioNumber) {
-            $('#create-io-section').removeClass('hidden');
-            $('#cust-po-io-number').prop('readonly', false);
-        } else {
-            $('#create-io-section').addClass('hidden');
-             if(ioNumber){ // If IO exists, make it readonly
-                $('#cust-po-io-number').prop('readonly', true);
-             }
-        }
-    }).trigger('change'); // Trigger on page load for edit mode
-
+    }
 });
-</script>
+
+        $(document).ready(function () {
+            // Load sidebar
+            $('.sidebar').load('nav.html')
+
+            // --- Customer PO List Page ---
+            $('#btn-show-create-customer-po').on('click', function () {
+                $('.page-content').addClass('hidden'); // Hide list page
+                $('#create-edit-customer-po-page').removeClass('hidden');
+                $('#customer-po-form-title').text('สร้างคำสั่งซื้อลูกค้าใหม่');
+                $('#customer-po-form')[0].reset();
+                $('#customer-po-id').val('');
+                $('#current-cust-po-file').text('');
+                $('#create-io-section').removeClass('hidden'); // Show create IO button for new PO
+                $('#cust-po-io-number').prop('readonly', false); // Allow editing IO for new
+            });
+
+            $('#customer-po-table-body').on('click', '.btn-edit-customer-po', function (e) {
+                e.preventDefault();
+                var customerPoId = $(this).closest('tr').find('td:first-child').text();
+                alert('กำลังแก้ไข Customer PO: ' + customerPoId + ' (ฟังก์ชันนี้ต้องดึงข้อมูลจริง)');
+
+                $('.page-content').addClass('hidden'); // Hide list page
+                $('#create-edit-customer-po-page').removeClass('hidden');
+                $('#customer-po-form-title').text('แก้ไขคำสั่งซื้อลูกค้า #' + customerPoId);
+                $('#customer-po-id').val(customerPoId);
+
+                // --- Simulate loading data for CUST-PO-789 ---
+                if (customerPoId === 'CUST-PO-789') {
+                    $('#cust-po-number').val('CUST-PO-789');
+                    $('#cust-po-date').val('2023-10-28');
+                    $('#cust-po-customer').val('cust001');
+                    $('#cust-po-qtn-ref').val('QTN00122');
+                    $('#cust-po-status').val('confirmed');
+                    $('#current-cust-po-file').text('customer_po_789.pdf');
+                    $('#cust-po-io-number').val('').prop('readonly', false); // No IO yet, editable
+                    $('#create-io-section').removeClass('hidden');
+                } else if (customerPoId === 'CUST-PO-790') {
+                    $('#cust-po-number').val('CUST-PO-790');
+                    $('#cust-po-date').val('2023-10-29');
+                    $('#cust-po-customer').val('cust002');
+                    $('#cust-po-qtn-ref').val('');
+                    $('#cust-po-status').val('processing');
+                    $('#current-cust-po-file').text('xyz_order_form.jpg');
+                    $('#cust-po-io-number').val('IO-2023-055').prop('readonly', true); // IO exists, read-only
+                    $('#create-io-section').addClass('hidden'); // Hide create IO button
+                } else {
+                    $('#customer-po-form')[0].reset();
+                    $('#current-cust-po-file').text('');
+                    $('#create-io-section').removeClass('hidden');
+                    $('#cust-po-io-number').prop('readonly', false);
+                }
+            });
+
+            $('#customer-po-table-body').on('click', '.btn-view-customer-po', function (e) {
+                e.preventDefault();
+                var customerPoId = $(this).closest('tr').find('td:first-child').text();
+                alert('กำลังดู Customer PO: ' + customerPoId + ' (แสดงรายละเอียดแบบ Read-only)');
+            });
+
+
+            // --- Create/Edit Customer PO Page ---
+            $('#btn-cancel-customer-po').on('click', function () {
+                $('.page-content').addClass('hidden'); // Hide form page
+                $('#customer-po-list-page').removeClass('hidden');
+                $('#page-title').text('คำสั่งซื้อลูกค้า (Customer POs)');
+            });
+
+            $('#customer-po-form').on('submit', function (e) {
+                e.preventDefault();
+                var customerPoId = $('#customer-po-id').val();
+                var action = customerPoId ? 'แก้ไข' : 'เพิ่ม';
+
+                var formData = new FormData(this); // Use FormData for file uploads
+                console.log(`Customer PO Form Data (${action}):`);
+                for (var pair of formData.entries()) {
+                    console.log(pair[0] + ': ' + pair[1]);
+                }
+                // In a real app, send formData via AJAX
+
+                alert(`คำสั่งซื้อลูกค้า ${action}แล้ว! (ดู Console log)`);
+
+                $('.page-content').addClass('hidden'); // Hide form page
+                $('#customer-po-list-page').removeClass('hidden');
+                $('#page-title').text('คำสั่งซื้อลูกค้า (Customer POs)');
+                // In a real app, refresh the Customer PO list table here
+            });
+
+            // Handle file input display
+            $('#cust-po-file').on('change', function () {
+                var fileName = $(this).val().split('\\').pop();
+                if (fileName) {
+                    $('#current-cust-po-file').text('ไฟล์ที่เลือก: ' + fileName);
+                } else {
+                    $('#current-cust-po-file').text('');
+                }
+            });
+
+            // Simulate Create IO button
+            $('#btn-create-io-from-po').on('click', function () {
+                var custPoNumber = $('#cust-po-number').val();
+                if (!custPoNumber) {
+                    alert('กรุณากรอกเลขที่ PO ของลูกค้าก่อนสร้าง IO');
+                    return;
+                }
+                var ioNumber = 'IO-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random() * 1000)).padStart(3, '0');
+                $('#cust-po-io-number').val(ioNumber).prop('readonly', true);
+                $('#cust-po-status').val('processing'); // Change status
+                $('#create-io-section').addClass('hidden'); // Hide button after creation
+                alert('สร้าง Internal Order: ' + ioNumber + ' สำหรับ PO: ' + custPoNumber + ' เรียบร้อยแล้ว (จำลอง)');
+                // In a real app, this would trigger a backend process to create an IO record
+            });
+
+            // Show/hide Create IO button based on status (example)
+            $('#cust-po-status').on('change', function () {
+                var status = $(this).val();
+                var ioNumber = $('#cust-po-io-number').val();
+                if ((status === 'confirmed' || status === 'pending') && !ioNumber) {
+                    $('#create-io-section').removeClass('hidden');
+                    $('#cust-po-io-number').prop('readonly', false);
+                } else {
+                    $('#create-io-section').addClass('hidden');
+                    if (ioNumber) { // If IO exists, make it readonly
+                        $('#cust-po-io-number').prop('readonly', true);
+                    }
+                }
+            }).trigger('change'); // Trigger on page load for edit mode
+
+        });
+    </script>
 
 </body>
+
 </html>
