@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading System Mockup - Deliveries</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link to your external CSS -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <!-- Sidebar will be loaded into this div -->
+    <div class="sidebar">
+        <!-- Content from nav.html will be placed here by jQuery.load() -->
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1 id="page-title">การจัดส่งสินค้า (Deliveries)</h1>
+            <div class="user-info">
+                User: Dispatch01 | <a href="#">Logout</a>
+            </div>
+        </div>
+
+        <!-- Delivery List Page -->
+        <div id="delivery-list-page" class="page-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>รายการจัดส่งสินค้า</h2>
+                <button class="btn btn-primary" id="btn-show-create-delivery"> + สร้างใบจัดส่งใหม่</button>
+            </div>
+
+            <div class="filter-bar">
+                <input type="text" id="filter-delivery-search" placeholder="ค้นหาเลขที่ใบส่ง, เลขที่ IO/PO...">
+                <select id="filter-delivery-status">
+                    <option value="">สถานะทั้งหมด</option>
+                    <option value="pending_dispatch">รอจัดส่ง</option>
+                    <option value="dispatched">จัดส่งแล้ว</option>
+                    <option value="delivered">ลูกค้าได้รับแล้ว</option>
+                    <option value="issue">มีปัญหา</option>
+                </select>
+                <input type="date" id="filter-delivery-date-from" title="จากวันที่จัดส่ง">
+                <input type="date" id="filter-delivery-date-to" title="ถึงวันที่จัดส่ง">
+                <button class="btn btn-secondary" id="btn-filter-delivery">ค้นหา</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>เลขที่ใบจัดส่ง (DN)</th>
+                        <th>วันที่จัดส่ง</th>
+                        <th>ลูกค้า</th>
+                        <th>อ้างอิง IO / Cust. PO</th>
+                        <th>ผู้รับผิดชอบขนส่ง</th>
+                        <th>สถานะ</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="delivery-table-body">
+                    <!-- Sample Data -->
+                    <tr>
+                        <td>DN2023-00512</td>
+                        <td>2023-11-01</td>
+                        <td>บ. ABC จำกัด</td>
+                        <td>IO-2023-055 / CUST-PO-789</td>
+                        <td>สมศักดิ์ ขนส่งไว</td>
+                        <td>จัดส่งแล้ว</td>
+                        <td class="action-buttons">
+                            <a href="#" class="btn btn-secondary btn-sm btn-view-delivery">ดู</a>
+                            <a href="#" class="btn btn-secondary btn-sm btn-edit-delivery">แก้</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>DN2023-00513</td>
+                        <td>2023-11-02</td>
+                        <td>บ. XYZ Trading</td>
+                        <td>IO-2023-056 / CUST-PO-790</td>
+                        <td>Kerry Express</td>
+                        <td>รอจัดส่ง</td>
+                        <td class="action-buttons">
+                            <a href="#" class="btn btn-secondary btn-sm btn-view-delivery">ดู</a>
+                            <a href="#" class="btn btn-secondary btn-sm btn-edit-delivery">แก้</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="text-align: center; margin-top: 20px;">
+                [Pagination: << < 1 2 3 > >> ]
+            </div>
+        </div>
+
+        <!-- Create/Edit Delivery Note Page (Initially Hidden) -->
+        <div id="create-edit-delivery-page" class="page-content hidden">
+            <h2 id="delivery-form-title">สร้างใบจัดส่งสินค้าใหม่</h2>
+            <form id="delivery-form">
+                <input type="hidden" id="delivery-id" name="delivery-id">
+
+                <div class="form-section">
+                    <h3>ข้อมูลการจัดส่ง</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="del-dn-number">เลขที่ใบจัดส่ง (DN)<span class="required-star">*</span></label>
+                            <input type="text" id="del-dn-number" name="del-dn-number" placeholder="(ระบบอาจสร้างให้อัตโนมัติ)" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="del-dispatch-date">วันที่จัดส่ง<span class="required-star">*</span></label>
+                            <input type="date" id="del-dispatch-date" name="del-dispatch-date" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="del-customer-po-ref">อ้างอิง Customer PO / IO<span class="required-star">*</span></label>
+                            <input type="text" id="del-customer-po-ref" name="del-customer-po-ref" placeholder="ค้นหา IO หรือ Customer PO" required>
+                            <!-- This should ideally be a lookup that populates customer & items -->
+                        </div>
+                        <div class="form-group">
+                            <label for="del-customer-name">ลูกค้า (แสดงอัตโนมัติ)</label>
+                            <input type="text" id="del-customer-name" name="del-customer-name" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="del-shipping-address">ที่อยู่จัดส่ง (แสดง/แก้ไขได้)</label>
+                        <textarea id="del-shipping-address" name="del-shipping-address" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>รายการสินค้าที่จัดส่ง</h3>
+                    <p class="form-text text-muted">(สินค้าจะถูกดึงมาจาก IO/PO ที่อ้างอิง และตัดสต็อกตามจำนวนที่จัดส่ง)</p>
+                    <table class="item-table" id="del-item-table">
+                        <thead>
+                            <tr>
+                                <th style="width:15%">รหัสสินค้า</th>
+                                <th style="width:30%">ชื่อสินค้า</th>
+                                <th style="width:15%">จำนวนสั่งซื้อ (จาก IO/PO)</th>
+                                <th style="width:15%">จำนวนจัดส่ง<span class="required-star">*</span></th>
+                                <th style="width:15%">Location ตัดสต็อก</th>
+                                <!-- <th style="width:10%">Action</th> (No remove usually, just adjust qty) -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Item rows will be populated based on IO/PO reference -->
+                        </tbody>
+                    </table>
+                    <!-- No "Add Item" button as items come from the referenced order -->
+                </div>
+
+                <div class="form-section">
+                    <h3>ข้อมูลการขนส่ง</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="del-carrier-name">ผู้ให้บริการขนส่ง / พนักงานขับรถ</label>
+                            <input type="text" id="del-carrier-name" name="del-carrier-name">
+                        </div>
+                        <div class="form-group">
+                            <label for="del-tracking-number">Tracking Number (ถ้ามี)</label>
+                            <input type="text" id="del-tracking-number" name="del-tracking-number">
+                        </div>
+                    </div>
+                     <div class="form-group">
+                        <label for="del-status">สถานะการจัดส่ง</label>
+                        <select id="del-status" name="del-status">
+                            <option value="pending_dispatch">รอจัดส่ง</option>
+                            <option value="dispatched">จัดส่งแล้ว</option>
+                            <option value="delivered_to_customer">ลูกค้าได้รับแล้ว</option>
+                            <option value="return_undelivered">ตีกลับ/ส่งไม่สำเร็จ</option>
+                            <option value="issue">มีปัญหาการจัดส่ง</option>
+                        </select>
+                    </div>
+                </div>
+
+                 <div class="form-section">
+                    <h3>หมายเหตุ</h3>
+                    <div class="form-group">
+                        <label for="del-notes">หมายเหตุการจัดส่ง</label>
+                        <textarea id="del-notes" name="del-notes" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div style="text-align: right; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-delivery">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary">บันทึกใบจัดส่ง</button>
+                    <button type="button" class="btn btn-primary" id="btn-print-delivery-note" style="margin-left:10px;">พิมพ์ใบส่งของ</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Placeholder for other pages -->
+        <div id="dashboard-page" class="page-content hidden"><h2>Dashboard Content</h2></div>
+        <!-- ... more placeholder divs ... -->
+
+    </div>
+
+<script>
+$(document).ready(function() {
+    // Load sidebar
+    $('.sidebar').load('nav.html');
+
+    // --- Delivery List Page Actions ---
+    $('#btn-show-create-delivery').on('click', function() {
+        $('.page-content').addClass('hidden');
+        $('#create-edit-delivery-page').removeClass('hidden');
+        $('#delivery-form-title').text('สร้างใบจัดส่งสินค้าใหม่');
+        $('#delivery-form')[0].reset();
+        $('#delivery-id').val('');
+        $('#del-item-table tbody').empty(); // Clear items, will be populated by IO/PO ref
+        $('#del-dn-number').val('DN' + new Date().getFullYear() + '-' + String(Math.floor(Math.random() * 100000)).padStart(5, '0')); // Auto-generate DN
+    });
+
+    $('#delivery-table-body').on('click', '.btn-edit-delivery', function(e) {
+        e.preventDefault();
+        var deliveryId = $(this).closest('tr').find('td:first-child').text();
+        alert('กำลังแก้ไขใบจัดส่ง: ' + deliveryId + ' (ฟังก์ชันนี้ต้องดึงข้อมูลจริง)');
+
+        $('.page-content').addClass('hidden');
+        $('#create-edit-delivery-page').removeClass('hidden');
+        $('#delivery-form-title').text('แก้ไขใบจัดส่งสินค้า #' + deliveryId);
+        $('#delivery-id').val(deliveryId);
+
+        // --- Simulate loading data for DN2023-00512 ---
+        if (deliveryId === 'DN2023-00512') {
+            $('#del-dn-number').val('DN2023-00512');
+            $('#del-dispatch-date').val('2023-11-01');
+            $('#del-customer-po-ref').val('IO-2023-055'); // Simulate referencing an IO
+            // Simulate populating customer and items from IO-2023-055
+            populateDeliveryFormFromOrderRef('IO-2023-055', [
+                { code: 'PROD001', name: 'Chemical A', ordered: 50, delivered: 50, location: 'WH-A1' },
+                { code: 'PROD007', name: 'Component X', ordered: 10, delivered: 10, location: 'WH-A1' }
+            ]);
+            $('#del-customer-name').val('บ. ABC จำกัด');
+            $('#del-shipping-address').val('123 ถ.สุขุมวิท แขวงคลองเตย เขตคลองเตย กรุงเทพฯ 10110');
+            $('#del-carrier-name').val('สมศักดิ์ ขนส่งไว');
+            $('#del-tracking-number').val('TRK789XYZ');
+            $('#del-status').val('dispatched');
+            $('#del-notes').val('ลูกค้าขอรับของช่วงบ่าย');
+        } else {
+            $('#delivery-form')[0].reset();
+            $('#del-item-table tbody').empty();
+            $('#del-dn-number').val('DN' + new Date().getFullYear() + '-' + String(Math.floor(Math.random() * 100000)).padStart(5, '0'));
+        }
+    });
+
+    $('#delivery-table-body').on('click', '.btn-view-delivery', function(e) {
+        e.preventDefault();
+        var deliveryId = $(this).closest('tr').find('td:first-child').text();
+        alert('กำลังดูใบจัดส่ง: ' + deliveryId + ' (แสดงรายละเอียดแบบ Read-only / พิมพ์)');
+    });
+
+
+    // --- Create/Edit Delivery Page ---
+    $('#btn-cancel-delivery').on('click', function() {
+        $('.page-content').addClass('hidden');
+        $('#delivery-list-page').removeClass('hidden');
+        $('#page-title').text('การจัดส่งสินค้า (Deliveries)');
+    });
+
+    $('#delivery-form').on('submit', function(e) {
+        e.preventDefault();
+        var deliveryId = $('#delivery-id').val();
+        var action = deliveryId ? 'แก้ไข' : 'สร้าง';
+
+        var formData = $(this).serializeArray();
+        console.log(`Delivery Form Data (${action}):`, formData);
+        var itemsToDeliver = [];
+        $('#del-item-table tbody tr').each(function() {
+            var qtyToDeliver = parseFloat($(this).find('.del-item-qty-delivered').val()) || 0;
+            if (qtyToDeliver > 0) { // Only include items with quantity to deliver
+                itemsToDeliver.push({
+                    product_code: $(this).find('td:eq(0)').text(), // Get from text as it's display only
+                    product_name: $(this).find('td:eq(1)').text(),
+                    quantity_ordered: parseFloat($(this).find('td:eq(2)').text()) || 0,
+                    quantity_delivered: qtyToDeliver,
+                    location: $(this).find('.del-item-location').val()
+                });
+            }
+        });
+        console.log('Items to Deliver:', itemsToDeliver);
+        // In a real app, validate qty_delivered <= qty_ordered (or remaining_to_deliver)
+        // And then trigger stock deduction
+
+        alert(`ใบจัดส่ง ${action}แล้ว! (ดู Console log)`);
+
+        $('.page-content').addClass('hidden');
+        $('#delivery-list-page').removeClass('hidden');
+        $('#page-title').text('การจัดส่งสินค้า (Deliveries)');
+        // In a real app, refresh the delivery list table
+    });
+
+    $('#btn-print-delivery-note').on('click', function(){
+        alert('จำลองการพิมพ์ใบส่งของ (Delivery Note)...');
+        // In a real app, this would generate a PDF or open a print dialog
+    });
+
+
+    // Simulate populating form based on IO/Customer PO reference
+    $('#del-customer-po-ref').on('blur', function(){
+        var orderRef = $(this).val().toUpperCase();
+        $('#del-item-table tbody').empty(); // Clear previous items
+
+        if (orderRef === 'IO-2023-055' || orderRef === 'CUST-PO-789') {
+            populateDeliveryFormFromOrderRef(orderRef, [
+                { code: 'PROD001', name: 'Chemical A', ordered: 50, delivered: 0, location: 'WH-A1' },
+                { code: 'PROD007', name: 'Component X', ordered: 10, delivered: 0, location: 'WH-A1' }
+            ]);
+            $('#del-customer-name').val('บ. ABC จำกัด');
+            $('#del-shipping-address').val('123 ถ.สุขุมวิท แขวงคลองเตย เขตคลองเตย กรุงเทพฯ 10110');
+        } else if (orderRef === 'IO-2023-056' || orderRef === 'CUST-PO-790') {
+             populateDeliveryFormFromOrderRef(orderRef, [
+                { code: 'PROD002', name: 'Solvent B Premium', ordered: 20, delivered: 0, location: 'WH-B2' }
+            ]);
+            $('#del-customer-name').val('บ. XYZ Trading');
+            $('#del-shipping-address').val('456 ถ.รัชดาภิเษก แขวงดินแดง เขตดินแดง กรุงเทพฯ 10400');
+        } else if (orderRef) {
+            $('#del-customer-name').val('(ไม่พบข้อมูลอ้างอิง)');
+            $('#del-shipping-address').val('');
+             $('#del-item-table tbody').html('<tr><td colspan="5" style="text-align:center; color:red;">ไม่พบรายการสินค้าสำหรับ IO/PO นี้</td></tr>');
+        } else {
+            $('#del-customer-name').val('');
+            $('#del-shipping-address').val('');
+        }
+    });
+
+    function populateDeliveryFormFromOrderRef(orderRef, items) {
+        $('#del-item-table tbody').empty();
+        if (items && items.length > 0) {
+            items.forEach(function(item, index) {
+                // In a real system, `item.delivered` would be pre-filled if editing a partially delivered order
+                // Or calculated as (ordered - previously_delivered)
+                var qtyToDeliver = item.delivered > 0 ? item.delivered : item.ordered; // Default to full order qty if new
+
+                var newRow = `
+                    <tr>
+                        <td>${item.code}</td>
+                        <td>${item.name}</td>
+                        <td>${item.ordered}</td>
+                        <td><input type="number" class="del-item-qty-delivered" name="items[${index}][qty_delivered]" value="${qtyToDeliver}" min="0" max="${item.ordered}"></td>
+                        <td><input type="text" class="del-item-location" name="items[${index}][location]" value="${item.location || 'WH-MAIN'}" placeholder="Location"></td>
+                    </tr>
+                `;
+                $('#del-item-table tbody').append(newRow);
+            });
+        } else {
+            $('#del-item-table tbody').html('<tr><td colspan="5" style="text-align:center; color:red;">ไม่พบรายการสินค้าสำหรับ IO/PO นี้</td></tr>');
+        }
+    }
+
+    // Validate quantity delivered on input
+    $('#del-item-table').on('input', '.del-item-qty-delivered', function(){
+        var $input = $(this);
+        var qtyOrdered = parseFloat($input.closest('tr').find('td:eq(2)').text()) || 0;
+        var qtyDelivered = parseFloat($input.val()) || 0;
+
+        if(qtyDelivered < 0) {
+            $input.val(0);
+        } else if (qtyDelivered > qtyOrdered) {
+            alert('จำนวนจัดส่งต้องไม่เกินจำนวนที่สั่งซื้อ!');
+            $input.val(qtyOrdered); // Reset to max allowed
+        }
+    });
+
+
+});
+</script>
+
+</body>
+</html>

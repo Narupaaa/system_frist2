@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading System Mockup - Inventory</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link to your external CSS -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <!-- Sidebar will be loaded into this div -->
+    <div class="sidebar">
+        <!-- Content from nav.html will be placed here by jQuery.load() -->
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1 id="page-title">สต็อก (Inventory)</h1>
+            <div class="user-info">
+                User: Warehouse01 | <a href="#">Logout</a>
+            </div>
+        </div>
+
+        <!-- Inventory List Page -->
+        <div id="inventory-list-page" class="page-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>ภาพรวมสต็อกสินค้า</h2>
+                <div>
+                    <button class="btn btn-primary" id="btn-show-receive-stock" style="margin-right: 10px;">+ รับสินค้าเข้าสต็อก</button>
+                    <button class="btn btn-primary" id="btn-show-adjust-stock">+ ปรับปรุง/เบิกจ่ายสต็อก</button>
+                </div>
+            </div>
+
+            <div class="filter-bar">
+                <input type="text" id="filter-inv-search" placeholder="ค้นหารหัสสินค้า, ชื่อสินค้า...">
+                <select id="filter-inv-category">
+                    <option value="">หมวดหมู่ทั้งหมด</option>
+                    <option value="chem">สารเคมี</option>
+                    <option value="solvent">ตัวทำละลาย</option>
+                </select>
+                <select id="filter-inv-location">
+                    <option value="">Location ทั้งหมด</option>
+                    <option value="WH-A1">WH-A1</option>
+                    <option value="WH-B2">WH-B2</option>
+                    <option value="QC-HOLD">QC Hold</option>
+                </select>
+                <button class="btn btn-secondary" id="btn-filter-inv">ค้นหา</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>รหัสสินค้า</th>
+                        <th>ชื่อสินค้า</th>
+                        <th>Location</th>
+                        <th>จำนวนคงเหลือ</th>
+                        <th>หน่วย</th>
+                        <th>Min Stock</th>
+                        <th>สถานะ</th>
+                        <th>Shelf Life (ถ้ามี)</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="inventory-table-body">
+                    <!-- Sample Data -->
+                    <tr>
+                        <td>PROD001</td>
+                        <td>Chemical A</td>
+                        <td>WH-A1</td>
+                        <td>50</td>
+                        <td>KG</td>
+                        <td>20</td>
+                        <td>ปกติ</td>
+                        <td>2024-12-31</td>
+                        <td class="action-buttons">
+                            <a href="#" class="btn btn-secondary btn-sm btn-view-stock-history">ดูประวัติ</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>PROD002</td>
+                        <td>Solvent B Premium</td>
+                        <td>WH-B2</td>
+                        <td>15</td>
+                        <td>LTR</td>
+                        <td>10</td>
+                        <td style="color:orange; font-weight:bold;">ใกล้หมด</td>
+                        <td>-</td>
+                        <td class="action-buttons">
+                            <a href="#" class="btn btn-secondary btn-sm btn-view-stock-history">ดูประวัติ</a>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td>PROD003</td>
+                        <td>Additive C</td>
+                        <td>QC-HOLD</td>
+                        <td>5</td>
+                        <td>PCS</td>
+                        <td>5</td>
+                        <td style="color:red; font-weight:bold;">ต่ำกว่า Min</td>
+                        <td>2024-06-30</td>
+                        <td class="action-buttons">
+                            <a href="#" class="btn btn-secondary btn-sm btn-view-stock-history">ดูประวัติ</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="text-align: center; margin-top: 20px;">
+                [Pagination: << < 1 2 3 > >> ]
+            </div>
+        </div>
+
+        <!-- Stock Adjustment / Movement Form Page (Initially Hidden) -->
+        <div id="stock-adjustment-page" class="page-content hidden">
+            <h2 id="stock-adjustment-form-title">ปรับปรุงสต็อกสินค้า</h2>
+            <form id="stock-adjustment-form">
+                <div class="form-section">
+                    <h3>ข้อมูลการเคลื่อนไหว</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="adj-transaction-type">ประเภทรายการ<span class="required-star">*</span></label>
+                            <select id="adj-transaction-type" name="adj-transaction-type" required>
+                                <option value="">-- เลือกประเภท --</option>
+                                <option value="IN_PURCHASE">รับเข้า (จากการสั่งซื้อ)</option>
+                                <option value="IN_ADJUST">รับเข้า (ปรับปรุงสต็อก)</option>
+                                <option value="OUT_SALE">เบิกจ่าย (สำหรับการขาย/IO)</option>
+                                <option value="OUT_ADJUST">เบิกจ่าย (ปรับปรุงสต็อก)</option>
+                                <option value="OUT_DAMAGE">เบิกจ่าย (เสียหาย/หมดอายุ)</option>
+                                <option value="TRANSFER">โอนย้ายระหว่าง Location</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="adj-transaction-date">วันที่ทำรายการ<span class="required-star">*</span></label>
+                            <input type="date" id="adj-transaction-date" name="adj-transaction-date" required>
+                        </div>
+                    </div>
+                     <div class="form-group" id="adj-ref-po-group"> <!-- Show if IN_PURCHASE -->
+                        <label for="adj-ref-po">อ้างอิง Supplier PO</label>
+                        <input type="text" id="adj-ref-po" name="adj-ref-po" placeholder="เช่น SUP-PO-088">
+                    </div>
+                    <div class="form-group" id="adj-ref-io-group"> <!-- Show if OUT_SALE -->
+                        <label for="adj-ref-io">อ้างอิง Customer PO / Internal Order (IO)</label>
+                        <input type="text" id="adj-ref-io" name="adj-ref-io" placeholder="เช่น IO-2023-055">
+                    </div>
+                </div>
+
+
+                <div class="form-section">
+                    <h3>รายการสินค้า</h3>
+                    <table class="item-table" id="adj-item-table">
+                        <thead>
+                            <tr>
+                                <th style="width:30%">รหัสสินค้า<span class="required-star">*</span></th>
+                                <th style="width:25%">ชื่อสินค้า (แสดงอัตโนมัติ)</th>
+                                <th style="width:10%">จำนวน<span class="required-star">*</span></th>
+                                <th style="width:15%">Location (ต้นทาง/ปลายทาง)<span class="required-star">*</span></th>
+                                <th style="width:15%">Lot No. / Shelf Life</th>
+                                <th style="width:5%">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Item rows will be added here -->
+                        </tbody>
+                    </table>
+                     <button type="button" class="btn btn-secondary" id="btn-add-adj-item" style="margin-top:10px;">+ เพิ่มรายการ</button>
+                </div>
+
+
+                <div class="form-section">
+                    <h3>หมายเหตุ</h3>
+                    <div class="form-group">
+                        <label for="adj-notes">หมายเหตุเพิ่มเติม</label>
+                        <textarea id="adj-notes" name="adj-notes" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div style="text-align: right; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-stock-adjustment">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary">บันทึกการเคลื่อนไหวสต็อก</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Placeholder for other pages -->
+        <div id="dashboard-page" class="page-content hidden"><h2>Dashboard Content</h2></div>
+        <!-- ... more placeholder divs ... -->
+
+    </div>
+
+<script>
+$(document).ready(function() {
+    // Load sidebar using the class selector
+    $('.sidebar').load('nav.html')
+
+
+
+    // --- Inventory List Page Actions ---
+    $('#btn-show-receive-stock').on('click', function() {
+        $('.page-content').addClass('hidden');
+        $('#stock-adjustment-page').removeClass('hidden');
+        $('#stock-adjustment-form-title').text('รับสินค้าเข้าสต็อก');
+        $('#stock-adjustment-form')[0].reset();
+        $('#adj-transaction-type').val('IN_PURCHASE').trigger('change'); // Default to IN_PURCHASE
+        $('#adj-item-table tbody').empty();
+        addAdjustmentItemRow();
+    });
+
+    $('#btn-show-adjust-stock').on('click', function() {
+        $('.page-content').addClass('hidden');
+        $('#stock-adjustment-page').removeClass('hidden');
+        $('#stock-adjustment-form-title').text('ปรับปรุง/เบิกจ่ายสต็อก');
+        $('#stock-adjustment-form')[0].reset();
+        $('#adj-transaction-type').val('').trigger('change'); // User selects type
+        $('#adj-item-table tbody').empty();
+        addAdjustmentItemRow();
+    });
+
+    $('#inventory-table-body').on('click', '.btn-view-stock-history', function(e){
+        e.preventDefault();
+        var productId = $(this).closest('tr').find('td:first-child').text();
+        alert('แสดงประวัติการเคลื่อนไหวของสินค้า: ' + productId + ' (หน้าจอใหม่/Modal)');
+    });
+
+
+    // --- Stock Adjustment Form Page ---
+    $('#btn-cancel-stock-adjustment').on('click', function() {
+        $('.page-content').addClass('hidden');
+        $('#inventory-list-page').removeClass('hidden');
+        $('#page-title').text('สต็อก (Inventory)');
+    });
+
+    $('#stock-adjustment-form').on('submit', function(e) {
+        e.preventDefault();
+        var formTitle = $('#stock-adjustment-form-title').text();
+        var formData = $(this).serializeArray();
+        console.log(`Stock Adjustment Data (${formTitle}):`, formData);
+        var items = [];
+        $('#adj-item-table tbody tr').each(function() {
+            var productCode = $(this).find('.adj-item-product-code').val();
+            var quantity = $(this).find('.adj-item-qty').val();
+            var location = $(this).find('.adj-item-location').val();
+             if(productCode && quantity && location){
+                items.push({
+                    product_code: productCode,
+                    quantity: parseFloat(quantity) || 0,
+                    location: location,
+                    lot_shelf_life: $(this).find('.adj-item-lot').val()
+                });
+            }
+        });
+        console.log('Items:', items);
+        alert(`บันทึกรายการ (${formTitle}) เรียบร้อยแล้ว! (ดู Console log)`);
+
+        $('.page-content').addClass('hidden');
+        $('#inventory-list-page').removeClass('hidden');
+        $('#page-title').text('สต็อก (Inventory)');
+        // In a real app, refresh the inventory list table here
+    });
+
+    // Show/hide reference fields based on transaction type
+    $('#adj-transaction-type').on('change', function() {
+        var type = $(this).val();
+        $('#adj-ref-po-group').addClass('hidden');
+        $('#adj-ref-io-group').addClass('hidden');
+
+        if (type === 'IN_PURCHASE') {
+            $('#adj-ref-po-group').removeClass('hidden');
+        } else if (type === 'OUT_SALE') {
+            $('#adj-ref-io-group').removeClass('hidden');
+        }
+    }).trigger('change'); // Trigger on load to set initial state
+
+    // Add item row to adjustment form
+    $('#btn-add-adj-item').on('click', function() {
+        addAdjustmentItemRow();
+    });
+
+    function addAdjustmentItemRow(productCode = '', productName = '', qty = 1, location = '', lot = '') {
+        var rowCount = $('#adj-item-table tbody tr').length;
+        // Product name would be auto-filled after entering/selecting product code in a real app
+        var newRow = `
+            <tr>
+                <td><input type="text" class="adj-item-product-code" name="items[${rowCount}][product_code]" value="${productCode}" placeholder="ค้นหา/กรอกรหัส"></td>
+                <td><input type="text" class="adj-item-product-name" name="items[${rowCount}][product_name]" value="${productName}" readonly placeholder="(ชื่อสินค้า)"></td>
+                <td><input type="number" class="adj-item-qty" name="items[${rowCount}][quantity]" value="${qty}" min="1"></td>
+                <td><input type="text" class="adj-item-location" name="items[${rowCount}][location]" value="${location}" placeholder="เช่น WH-A1"></td>
+                <td><input type="text" class="adj-item-lot" name="items[${rowCount}][lot_shelf_life]" value="${lot}" placeholder="Lot No. / YYYY-MM-DD"></td>
+                <td><button type="button" class="btn btn-danger btn-sm btn-remove-adj-item">ลบ</button></td>
+            </tr>
+        `;
+        $('#adj-item-table tbody').append(newRow);
+    }
+
+    // Remove item row from adjustment form
+    $('#adj-item-table').on('click', '.btn-remove-adj-item', function() {
+        $(this).closest('tr').remove();
+    });
+
+    // Simulate product name lookup (very basic)
+    $('#adj-item-table').on('blur', '.adj-item-product-code', function(){
+        var code = $(this).val().toUpperCase();
+        var nameField = $(this).closest('tr').find('.adj-item-product-name');
+        if(code === 'PROD001'){
+            nameField.val('Chemical A');
+        } else if (code === 'PROD002'){
+            nameField.val('Solvent B Premium');
+        } else if (code === 'PROD003'){
+            nameField.val('Additive C');
+        } else if (code) {
+            nameField.val('(ไม่พบสินค้า)');
+        } else {
+            nameField.val('');
+        }
+    });
+
+    // Initial setup when form is shown for new adjustment
+    if ($('#stock-adjustment-page').not('.hidden').length > 0 && $('#adj-item-table tbody tr').length === 0) {
+       addAdjustmentItemRow();
+    }
+
+});
+</script>
+
+</body>
+</html>

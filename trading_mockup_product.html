@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading System Mockup - Products</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        /* CSS Styles (เหมือนเดิมจากตัวอย่างก่อนหน้า - สามารถ copy มาวางได้เลย) */
+        body {
+            font-family: 'Tahoma', 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            background-color: #f0f2f5;
+            color: #333;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 20px 30px;
+            overflow-y: auto;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #bdc3c7;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 1.8em;
+            color: #1a5ca3;
+            margin: 0;
+        }
+        .header .user-info {
+            font-size: 0.9em;
+        }
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.2s ease;
+        }
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        .btn-secondary {
+            background-color: #ecf0f1;
+            color: #34495e;
+            border: 1px solid #bdc3c7;
+        }
+        .btn-secondary:hover {
+            background-color: #d5dbdb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: 600;
+            color: #555;
+        }
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        .action-buttons a, .action-buttons button {
+            margin-right: 5px;
+            text-decoration: none;
+            padding: 5px 8px;
+        }
+
+        .form-section {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .form-section h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            font-size: 1.2em;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group input[type="file"],
+        .form-group select,
+        .form-group textarea {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+        .form-row .form-group {
+            flex: 1;
+        }
+        .form-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+
+        .hidden {
+            display: none;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .filter-bar input, .filter-bar select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1 id="page-title">สินค้า (Products)</h1>
+            <div class="user-info">
+                User: Admin01 | <a href="#">Logout</a>
+            </div>
+        </div>
+
+        <!-- Product List Page -->
+        <div id="product-list-page">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>รายการสินค้า</h2>
+                <button class="btn btn-primary" id="btn-show-create-product"> + เพิ่มสินค้าใหม่</button>
+            </div>
+
+            <div class="filter-bar">
+                <input type="text" placeholder="ค้นหารหัสสินค้า, ชื่อสินค้า...">
+                <select id="filter-product-category">
+                    <option value="">หมวดหมู่ทั้งหมด</option>
+                    <option value="chem">สารเคมี</option>
+                    <option value="solvent">ตัวทำละลาย</option>
+                    <option value="additive">สารเติมแต่ง</option>
+                </select>
+                <select id="filter-product-supplier">
+                    <option value="">Supplier ทั้งหมด</option>
+                    <option value="sup001">Supplier Best Co.</option>
+                    <option value="sup002">Global Chem Inc.</option>
+                </select>
+                <button class="btn btn-secondary">ค้นหา</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>รหัสสินค้า (SKU)</th>
+                        <th>ชื่อสินค้า</th>
+                        <th>หมวดหมู่</th>
+                        <th>ราคาต้นทุน</th>
+                        <th>หน่วย</th>
+                        <th>คงเหลือ</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="product-table-body">
+                    <!-- Sample Data -->
+                    <tr>
+                        <td>PROD001</td>
+                        <td>Chemical A</td>
+                        <td>สารเคมี</td>
+                        <td>350.00</td>
+                        <td>KG</td>
+                        <td>50</td>
+                        <td class="action-buttons">
+                            <a href="#" class="btn btn-secondary btn-sm btn-view-product">ดู</a>
+                            <a href="#" class="btn btn-secondary btn-sm btn-edit-product">แก้</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>PROD002</td>
+                        <td>Solvent B Premium</td>
+                        <td>ตัวทำละลาย</td>
+                        <td>120.50</td>
+                        <td>LTR</td>
+                        <td>150</td>
+                        <td class="action-buttons">
+                            <a href="#" class="btn btn-secondary btn-sm btn-view-product">ดู</a>
+                            <a href="#" class="btn btn-secondary btn-sm btn-edit-product">แก้</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="text-align: center; margin-top: 20px;">
+                [Pagination: << < 1 2 3 > >> ]
+            </div>
+        </div>
+
+        <!-- Create/Edit Product Page (Initially Hidden) -->
+        <div id="create-edit-product-page" class="hidden">
+            <h2 id="product-form-title">เพิ่มสินค้าใหม่</h2>
+            <form id="product-form">
+                <input type="hidden" id="product-id" name="product-id">
+
+                <div class="form-section">
+                    <h3>ข้อมูลสินค้าหลัก</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="product-sku">รหัสสินค้า (SKU) <span style="color:red;">*</span></label>
+                            <input type="text" id="product-sku" name="product-sku" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="product-name">ชื่อสินค้า <span style="color:red;">*</span></label>
+                            <input type="text" id="product-name" name="product-name" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-description">คำอธิบายสินค้า</label>
+                        <textarea id="product-description" name="product-description" rows="3"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="product-category">หมวดหมู่สินค้า</label>
+                            <select id="product-category" name="product-category">
+                                <option value="">-- เลือกหมวดหมู่ --</option>
+                                <option value="chem">สารเคมี</option>
+                                <option value="solvent">ตัวทำละลาย</option>
+                                <option value="additive">สารเติมแต่ง</option>
+                                <option value="other">อื่นๆ</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="product-unit">หน่วยนับ <span style="color:red;">*</span></label>
+                            <input type="text" id="product-unit" name="product-unit" placeholder="เช่น KG, LTR, PCS" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>ราคาและสต็อก</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="product-cost-price">ราคาต้นทุน (บาท)</label>
+                            <input type="number" id="product-cost-price" name="product-cost-price" min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="product-default-margin">Margin (%)</label>
+                            <input type="number" id="product-default-margin" name="product-default-margin" min="0" max="1000" placeholder="เช่น 20 สำหรับ 20%">
+                        </div>
+                    </div>
+                     <div class="form-row">
+                        <div class="form-group">
+                            <label for="product-min-stock">Min Stock</label>
+                            <input type="number" id="product-min-stock" name="product-min-stock" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="product-max-stock">Max Stock</label>
+                            <input type="number" id="product-max-stock" name="product-max-stock" min="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                         <input type="checkbox" id="product-has-shelf-life" name="product-has-shelf-life">
+                         <label for="product-has-shelf-life" style="font-weight:normal; display:inline;">สินค้ามี Shelf Life</label>
+                    </div>
+                    <div class="form-group hidden" id="product-shelf-life-days-group">
+                        <label for="product-shelf-life-days">Shelf Life (วัน)</label>
+                        <input type="number" id="product-shelf-life-days" name="product-shelf-life-days" min="0">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>ข้อมูล Supplier</h3>
+                    <div class="form-group">
+                        <label for="product-supplier">Supplier หลัก</label>
+                        <select id="product-supplier" name="product-supplier">
+                            <option value="">-- เลือก Supplier --</option>
+                            <option value="sup001">Supplier Best Co.</option>
+                            <option value="sup002">Global Chem Inc.</option>
+                            <option value="sup003">Local Source Ltd.</option>
+                        </select>
+                    </div>
+                     <div class="form-group">
+                        <label for="product-supplier-sku">รหัสสินค้าของ Supplier (ถ้ามี)</label>
+                        <input type="text" id="product-supplier-sku" name="product-supplier-sku">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>เอกสารและไฟล์แนบ</h3>
+                    <div class="form-group">
+                        <label for="product-spec-file">ไฟล์ Spec สินค้า (PDF, Word, Excel)</label>
+                        <input type="file" id="product-spec-file" name="product-spec-file" accept=".pdf,.doc,.docx,.xls,.xlsx">
+                        <small id="current-spec-file" class="form-text text-muted"></small>
+                    </div>
+                    <!-- อาจมีส่วนสำหรับรูปภาพสินค้า -->
+                </div>
+
+
+                <div style="text-align: right; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-product">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary">บันทึกข้อมูลสินค้า</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+<script>
+$(document).ready(function() {
+    // --- Navigation (Simplified) ---
+            $('.sidebar').load('nav.html');
+
+
+    // --- Product List Page ---
+    $('#btn-show-create-product').on('click', function() {
+        $('#product-list-page').addClass('hidden');
+        $('#create-edit-product-page').removeClass('hidden');
+        $('#product-form-title').text('เพิ่มสินค้าใหม่');
+        $('#product-form')[0].reset();
+        $('#product-id').val('');
+        $('#product-shelf-life-days-group').addClass('hidden');
+        $('#current-spec-file').text('');
+    });
+
+    $('#product-table-body').on('click', '.btn-edit-product', function(e) {
+        e.preventDefault();
+        var productId = $(this).closest('tr').find('td:first-child').text();
+        alert('กำลังแก้ไขสินค้า ID: ' + productId + ' (ฟังก์ชันนี้ต้องดึงข้อมูลจริง)');
+
+        $('#product-list-page').addClass('hidden');
+        $('#create-edit-product-page').removeClass('hidden');
+        $('#product-form-title').text('แก้ไขข้อมูลสินค้า #' + productId);
+        $('#product-id').val(productId);
+
+        // --- Simulate loading data for PROD001 ---
+        if (productId === 'PROD001') {
+            $('#product-sku').val('PROD001');
+            $('#product-name').val('Chemical A');
+            $('#product-description').val('สารเคมีคุณภาพสูงสำหรับอุตสาหกรรม');
+            $('#product-category').val('chem');
+            $('#product-unit').val('KG');
+            $('#product-cost-price').val(350.00);
+            $('#product-default-margin').val(25);
+            $('#product-min-stock').val(20);
+            $('#product-max-stock').val(100);
+            $('#product-has-shelf-life').prop('checked', true).trigger('change'); // Trigger change to show days
+            $('#product-shelf-life-days').val(365);
+            $('#product-supplier').val('sup001');
+            $('#product-supplier-sku').val('CA-XYZ-789');
+            $('#current-spec-file').text('spec_chemical_a_v2.pdf');
+        } else {
+            $('#product-form')[0].reset();
+            $('#product-shelf-life-days-group').addClass('hidden');
+            $('#current-spec-file').text('');
+        }
+    });
+
+     $('#product-table-body').on('click', '.btn-view-product', function(e) {
+        e.preventDefault();
+        var productId = $(this).closest('tr').find('td:first-child').text();
+        alert('กำลังดูข้อมูลสินค้า ID: ' + productId + ' (แสดงรายละเอียดแบบ Read-only)');
+    });
+
+
+    // --- Create/Edit Product Page ---
+    $('#btn-cancel-product').on('click', function() {
+        $('#create-edit-product-page').addClass('hidden');
+        $('#product-list-page').removeClass('hidden');
+        $('#page-title').text('สินค้า (Products)');
+    });
+
+    $('#product-form').on('submit', function(e) {
+        e.preventDefault();
+        var productId = $('#product-id').val();
+        var action = productId ? 'แก้ไข' : 'เพิ่ม';
+
+        // For file upload, you'd typically use FormData
+        var formData = new FormData(this);
+        // formData.append('other_field', 'value'); // If you need to add more data
+
+        console.log(`Product Form Data (${action}):`);
+        for (var pair of formData.entries()) {
+            console.log(pair[0]+ ': ' + pair[1]);
+        }
+        // In a real app, send formData via AJAX (e.g., $.ajax with processData: false, contentType: false)
+
+        alert(`ข้อมูลสินค้า ${action}แล้ว! (ดู Console log)`);
+
+        $('#create-edit-product-page').addClass('hidden');
+        $('#product-list-page').removeClass('hidden');
+        $('#page-title').text('สินค้า (Products)');
+        // In a real app, refresh the product list table here
+    });
+
+    // Toggle Shelf Life Days input
+    $('#product-has-shelf-life').on('change', function() {
+        if ($(this).is(':checked')) {
+            $('#product-shelf-life-days-group').removeClass('hidden');
+        } else {
+            $('#product-shelf-life-days-group').addClass('hidden');
+            $('#product-shelf-life-days').val(''); // Clear value if unchecked
+        }
+    });
+
+    // Handle file input display (optional, shows selected file name)
+    $('#product-spec-file').on('change', function(){
+        var fileName = $(this).val().split('\\').pop();
+        if(fileName){
+            $('#current-spec-file').text('ไฟล์ที่เลือก: ' + fileName);
+        } else {
+            // If editing and a file was previously there, you might want to show the old one
+            // This part needs more logic for "replace file" vs "keep old file"
+            // For simplicity, we just clear it if no new file is chosen
+            $('#current-spec-file').text('');
+        }
+    });
+
+
+    // Set initial active page
+    $('#nav-products').trigger('click');
+
+});
+</script>
+
+</body>
+</html>

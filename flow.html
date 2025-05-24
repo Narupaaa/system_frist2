@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบ Flow การทำงาน บริษัท Trading</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        body {
+            font-family: 'Tahoma', 'Segoe UI', 'Arial', sans-serif;
+            line-height: 1.7;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        .container {
+            max-width: 960px;
+            margin: 20px auto;
+            background: #ffffff;
+            padding: 20px 30px 30px 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: #1a5ca3; /* Dark Blue */
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #3498db; /* Lighter Blue */
+            font-size: 2em;
+        }
+        h2 {
+            color: #2c3e50; /* Dark Grayish Blue */
+            margin-top: 35px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #bdc3c7; /* Light Gray */
+            font-size: 1.7em;
+        }
+        .flow-section h3, .module-section h3 {
+            background-color: #e9f5ff; /* Light Blue */
+            padding: 12px 18px;
+            border-left: 6px solid #3498db; /* Primary Blue */
+            margin-top: 20px;
+            margin-bottom: 0;
+            border-radius: 5px 5px 0 0;
+            font-size: 1.25em;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+        .module-section h3 {
+            background-color: #e6fef7; /* Light Green */
+            border-left-color: #1abc9c; /* Primary Green */
+        }
+        .flow-section h3:hover, .module-section h3:hover {
+            background-color: #d4eaff; /* Lighter Blue on hover */
+        }
+        .module-section h3:hover {
+            background-color: #d1f9eb; /* Lighter Green on hover */
+        }
+        .flow-section h3 .toggle-icon::before,
+        .module-section h3 .toggle-icon::before {
+            content: '▼'; /* Down arrow for collapsed */
+            font-size: 0.8em;
+            margin-left: 10px;
+            display: inline-block;
+            transition: transform 0.2s ease-in-out;
+        }
+        .flow-section h3.active .toggle-icon::before,
+        .module-section h3.active .toggle-icon::before {
+            transform: rotate(-180deg); /* Up arrow for expanded */
+        }
+        .content {
+            padding: 15px 20px;
+            border: 1px solid #e0e0e0;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+            background-color: #fdfdfd;
+            display: none; /* Hidden by default */
+        }
+        ul, ol {
+            padding-left: 25px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+        li {
+            margin-bottom: 10px;
+            color: #555;
+        }
+        .sub-list {
+            padding-left: 20px;
+            list-style-type: circle;
+        }
+        .sub-list li {
+            margin-bottom: 6px;
+            font-size: 0.95em;
+        }
+        .emoji {
+            margin-right: 12px;
+            font-size: 1.3em;
+            vertical-align: middle;
+        }
+        .step-number {
+            font-weight: bold;
+            color: #2980b9; /* Medium Blue */
+            margin-right: 8px;
+        }
+        .important-note {
+            font-style: italic;
+            color: #7f8c8d; /* Gray */
+            font-size: 0.9em;
+        }
+
+        /* Specific styling for active (open) headers */
+        .flow-section h3.active, .module-section h3.active {
+             /* background-color: #cce7ff; /* Slightly darker blue when active */
+        }
+        /* .module-section h3.active {
+             background-color: #c3f3e1; /* Slightly darker green when active */
+        /* } */
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1><span class="emoji">🚀</span> Flow การทำงาน บริษัท Trading</h1>
+
+    <section id="main-flow">
+        <h2><span class="emoji">🔁</span> Main Flow การดำเนินธุรกิจ Trading</h2>
+
+        <div class="flow-section">
+            <h3 class="collapsible"><span class="step-number">1.</span> ค้นหาโอกาสทางการขาย <span class="toggle-icon"></span></h3>
+            <div class="content">
+                <ul>
+                    <li>วิเคราะห์รายชื่อโรงงาน/ลูกค้าจากข้อมูลกรมโรงงาน (API หรือ Excel)</li>
+                    <li>กำหนด Target ลูกค้า: ตามประเภทกิจการ / เงินทุนจดทะเบียน</li>
+                    <li>วางแผนเส้นทางเซลล์: คำนวณระยะทาง, ค่าขนส่ง, ความเสี่ยง (เช่น รัศมีการระเบิด)</li>
+                    <li>สร้าง Sale Pipeline / Prospect List</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="flow-section">
+            <h3 class="collapsible"><span class="step-number">2.</span> ออกใบเสนอราคา (Quotation) <span class="toggle-icon"></span></h3>
+            <div class="content">
+                <ul>
+                    <li>เซลล์สร้าง QTN พร้อมข้อมูล:
+                        <ul class="sub-list">
+                            <li>ลูกค้า (ชื่อ, ที่อยู่, ผู้ติดต่อ)</li>
+                            <li>รายละเอียดสินค้า (ชื่อ, รหัส, จำนวน, ราคาขาย, Spec)</li>
+                        </ul>
+                    </li>
+                    <li>คำนวณราคาขาย (Cost + Margin)</li>
+                    <li>ระบุสถานะของ QTN: Reviewing / Waiting / Customer Accepted PR ฯลฯ</li>
+                    <li>ระบุ โอกาสปิดการขาย (Chance %) และ เดือนคาดว่าจะปิดการขาย</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="flow-section">
+            <h3 class="collapsible"><span class="step-number">3.</span> Sale Forecast & การวางแผน <span class="toggle-icon"></span></h3>
+            <div class="content">
+                <ul>
+                    <li>ดึงข้อมูลจาก QTN มาประเมินรายรับอนาคต</li>
+                    <li>วิเคราะห์ภาพรวมยอดขายที่คาดว่าจะเข้า</li>
+                    <li>ประโยชน์:
+                        <ul class="sub-list">
+                            <li>บริหาร Cash Flow</li>
+                            <li>วางแผนสต็อกล่วงหน้า</li>
+                            <li>ลดความเสี่ยงจาก Overcost / Cash Crunch</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="flow-section">
+            <h3 class="collapsible"><span class="step-number">4.</span> รับ PO จากลูกค้า (Customer PO) <span class="toggle-icon"></span></h3>
+            <div class="content">
+                <ul>
+                    <li>ตรวจสอบความถูกต้องของ PO</li>
+                    <li>สร้าง IO (Internal Order) เพื่อบันทึกข้อมูลโครงการ</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="flow-section">
+            <h3 class="collapsible"><span class="step-number">5.</span> สั่งของจาก Supplier (Supplier PO) <span class="toggle-icon"></span></h3>
+            <div class="content">
+                <ul>
+                    <li>ออก PO ไปยัง Supplier พร้อมรายละเอียด:
+                        <ul class="sub-list">
+                            <li>สินค้า / จำนวน / ราคา / วันที่ต้องการ</li>
+                        </ul>
+                    </li>
+                    <li>ระบุ Incoterm / เงื่อนไขขนส่ง / ภาษี</li>
+                    <li>บันทึกในระบบ Stock + IO</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="flow-section">
+            <h3 class="collapsible"><span class="step-number">6.</span> จัดการสต็อกสินค้า <span class="toggle-icon"></span></h3>
+            <div class="content">
+                <ul>
+                    <li>รับสินค้าเข้าสต็อก:
+                        <ul class="sub-list">
+                            <li>Trace จาก Supplier PO</li>
+                            <li>ระบุ Product ID, Location, วันที่รับเข้า</li>
+                        </ul>
+                    </li>
+                    <li>สินค้ามี Shelf Life / หมวดหมู่ / Min-Max Alert</li>
+                    <li>กำหนดสิทธิ์เข้าถึงสต็อกแยกตามบทบาท</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="flow-section">
+            <h3 class="collapsible"><span class="step-number">7.</span> ส่งของให้ลูกค้า + ออกใบกำกับ <span class="toggle-icon"></span></h3>
+            <div class="content">
+                <ul>
+                    <li>อ้างอิงจาก Customer PO และ IO</li>
+                    <li>ตัดของออกจากสต็อก</li>
+                    <li>Generate เอกสารที่เกี่ยวข้อง: ใบส่งของ, ใบกำกับภาษี</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="flow-section">
+            <h3 class="collapsible"><span class="step-number">8.</span> การวางบิล + เก็บเงิน <span class="toggle-icon"></span></h3>
+            <div class="content">
+                <ul>
+                    <li>วางบิลตามเครดิตเทอม</li>
+                    <li>ติดตามการรับเงิน</li>
+                    <li>ระบุในระบบว่าเงินเข้าเมื่อใด เพื่อช่วยดู Cash Flow</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="supporting-modules">
+        <h2><span class="emoji">🧩</span> องค์ประกอบสนับสนุน (Supporting Modules)</h2>
+
+        <div class="module-section">
+            <h3 class="collapsible"><span class="emoji">📦</span> ระบบสต็อก (Stock Management) <span class="toggle-icon"></span></h3>
+            <div class="content">
+                <ul>
+                    <li>ฟังก์ชันแยกจาก QTN/PO</li>
+                    <li>ติดตามสินค้าแบบ Traceable</li>
+                    <li>มีระบบแจ้งเตือน Min-Max</li>
+                    <li>ใช้ข้อมูลสต็อกในการคำนวณ Forecast และวางแผนซื้อ</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="module-section">
+            <h3 class="collapsible"><span class="emoji">📊</span> Dashboard / Report <span class="toggle-icon"></span></h3>
+            <div class="content">
+                <ul>
+                    <li>รายงาน Sale Forecast</li>
+                    <li>รายงานกำไรขาดทุนแยกตามสินค้า</li>
+                    <li>Report สินค้าทำเงินสูงสุด / สินค้าคงค้างนาน</li>
+                    <li>ภาพรวมสถานะงานทั้งหมด</li>
+                    <li>ภาพรวม Cash Flow รายงานตาม IO</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="module-section">
+            <h3 class="collapsible"><span class="emoji">📁</span> เอกสารสำคัญที่ระบบต้องสร้างได้ <span class="toggle-icon"></span></h3>
+            <div class="content">
+                <ul>
+                    <li>Quotation (QTN)</li>
+                    <li>Supplier PO</li>
+                    <li>IO (Internal Order)</li>
+                    <li>Customer PO (อัปโหลดแนบไฟล์) <span class="important-note">(การอัปโหลดไฟล์จริงต้องใช้ backend)</span></li>
+                    <li>รายงาน Spec สินค้า</li>
+                    <li>เอกสารแจ้ง Delay</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="module-section">
+            <h3 class="collapsible"><span class="emoji">🧠</span> ข้อมูลลูกค้า & สินค้า (Master Data) <span class="toggle-icon"></span></h3>
+            <div class="content">
+                <ul>
+                    <li>Customer Info: Company, Site, Contact, Email</li>
+                    <li>Product Info: รหัสสินค้า, ชื่อ, Spec, Description, หมวดหมู่</li>
+                    <li>Catalog และ Company Profile ต้องอัปเดตได้ <span class="important-note">(การอัปเดตข้อมูลจริงต้องใช้ backend)</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="module-section">
+            <h3 class="collapsible"><span class="emoji">💸</span> การบริหาร Cash Flow <span class="toggle-icon"></span></h3>
+            <div class="content">
+                <ul>
+                    <li>ระบุ Cash In/Out แยกตาม IO</li>
+                    <li>คำนวณเงินที่ลงทุน + เงินที่คาดว่าจะได้</li>
+                    <li>แจ้งเตือนงานที่เสี่ยงขาดทุน</li>
+                    <li>วิเคราะห์ค่าบริหารจัดการรายเดือน</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="module-section">
+            <h3 class="collapsible"><span class="emoji">🗺️</span> การวางแผนเชิงพื้นที่ <span class="toggle-icon"></span></h3>
+            <div class="content">
+                <ul>
+                    <li>ดึงข้อมูลโรงงานจากกรมโรงงาน <span class="important-note">(การดึงข้อมูลจาก API จริงต้องใช้ backend หรือ CORS proxy)</span></li>
+                    <li>แสดงบนแผนที่ประเทศไทย <span class="important-note">(การแสดงผลแผนที่จริงต้องใช้ Map API เช่น Google Maps, Leaflet)</span></li>
+                    <li>กำหนด Rank ลูกค้า</li>
+                    <li>คำนวณเส้นทางเซลล์เพื่อเพิ่มประสิทธิภาพ</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script>
+$(document).ready(function(){
+    $('.collapsible').on('click', function(){
+        // Toggle the 'active' class on the clicked header
+        $(this).toggleClass('active');
+
+        // Find the next '.content' element and toggle its visibility with a slide effect
+        var content = $(this).next('.content');
+        content.slideToggle(300); // 300 milliseconds for the animation
+    });
+
+    // Optional: Uncomment to open the first item in each section by default
+    /*
+    $('#main-flow .flow-section:first-child .collapsible').addClass('active').next('.content').show();
+    $('#supporting-modules .module-section:first-child .collapsible').addClass('active').next('.content').show();
+    */
+
+    // Optional: Uncomment to open ALL items by default
+    /*
+    $('.collapsible').addClass('active');
+    $('.content').show();
+    */
+});
+</script>
+
+</body>
+</html>

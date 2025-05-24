@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading System Mockup - Settings</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link to your external CSS -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <!-- Content from nav.html will be loaded here -->
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1 id="page-title">ตั้งค่าระบบ (System Settings)</h1>
+            <div class="user-info">
+                User: Admin01 | <a href="#">Logout</a>
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div id="settings-page" class="page-content">
+            <p>ปรับแต่งการตั้งค่าต่างๆ ของระบบที่นี่ ผู้ใช้ทั่วไปอาจไม่สามารถเข้าถึงหรือแก้ไขทุกส่วนได้</p>
+
+            <!-- Tabs for different setting categories -->
+            <div class="settings-tabs">
+                <button class="tab-link active" data-tab="tab-general">ทั่วไป</button>
+                <button class="tab-link" data-tab="tab-users">ผู้ใช้งานและสิทธิ์</button>
+                <button class="tab-link" data-tab="tab-company">ข้อมูลบริษัท</button>
+                <button class="tab-link" data-tab="tab-numbering">เลขที่เอกสาร</button>
+                <button class="tab-link" data-tab="tab-notifications">การแจ้งเตือน</button>
+                <button class="tab-link" data-tab="tab-integrations">การเชื่อมต่อภายนอก</button>
+                <button class="tab-link" data-tab="tab-data">ข้อมูล Master (หมวดหมู่)</button>
+            </div>
+
+            <!-- Tab Content -->
+            <div id="tab-general" class="tab-content active">
+                <h3>การตั้งค่าทั่วไป</h3>
+                <form id="form-general-settings">
+                    <div class="form-section">
+                        <div class="form-group">
+                            <label for="setting-system-name">ชื่อระบบ</label>
+                            <input type="text" id="setting-system-name" name="setting-system-name" value="Trading System">
+                        </div>
+                        <div class="form-group">
+                            <label for="setting-default-language">ภาษาเริ่มต้น</label>
+                            <select id="setting-default-language" name="setting-default-language">
+                                <option value="th" selected>ไทย (Thai)</option>
+                                <option value="en">อังกฤษ (English)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="setting-default-timezone">เขตเวลาเริ่มต้น</label>
+                            <select id="setting-default-timezone" name="setting-default-timezone">
+                                <option value="Asia/Bangkok" selected>Asia/Bangkok (GMT+7)</option>
+                                <option value="Etc/UTC">UTC</option>
+                            </select>
+                        </div>
+                         <div class="form-group">
+                            <label for="setting-default-currency">สกุลเงินเริ่มต้น</label>
+                            <select id="setting-default-currency" name="setting-default-currency">
+                                <option value="THB" selected>THB (บาทไทย)</option>
+                                <option value="USD">USD (ดอลลาร์สหรัฐ)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">บันทึกการตั้งค่าทั่วไป</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="tab-users" class="tab-content">
+                <h3>การจัดการผู้ใช้งานและสิทธิ์</h3>
+                <div class="form-section">
+                    <button class="btn btn-primary" id="btn-add-new-user" style="margin-bottom:15px;">+ เพิ่มผู้ใช้งานใหม่</button>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ชื่อผู้ใช้ (Username)</th>
+                                <th>ชื่อ-นามสกุล</th>
+                                <th>อีเมล</th>
+                                <th>บทบาท (Role)</th>
+                                <th>สถานะ</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                            <tr><td>sales01</td><td>สมศรี ขายดี</td><td>somsri@example.com</td><td>Sales</td><td>Active</td><td><a href="#" class="btn btn-secondary btn-sm">แก้ไข</a> <a href="#" class="btn btn-danger btn-sm">ลบ</a></td></tr>
+                            <tr><td>admin01</td><td>อดิศักดิ์ ผู้ดูแล</td><td>admin@example.com</td><td>Administrator</td><td>Active</td><td><a href="#" class="btn btn-secondary btn-sm">แก้ไข</a></td></tr>
+                        </tbody>
+                    </table>
+                    <h4 style="margin-top:20px;">จัดการบทบาท (Roles) และสิทธิ์การเข้าถึง (Permissions)</h4>
+                    <p><a href="#" class="btn btn-secondary">จัดการ Roles & Permissions</a> (จะนำไปหน้าจัดการสิทธิ์โดยเฉพาะ)</p>
+                </div>
+            </div>
+
+            <div id="tab-company" class="tab-content">
+                <h3>ข้อมูลบริษัท</h3>
+                <form id="form-company-settings">
+                     <div class="form-section">
+                        <div class="form-group">
+                            <label for="setting-company-name">ชื่อบริษัท<span class="required-star">*</span></label>
+                            <input type="text" id="setting-company-name" name="setting-company-name" value="บริษัท เทรดดิ้ง จำกัด (มหาชน)">
+                        </div>
+                        <div class="form-group">
+                            <label for="setting-company-tax-id">เลขประจำตัวผู้เสียภาษี<span class="required-star">*</span></label>
+                            <input type="text" id="setting-company-tax-id" name="setting-company-tax-id" value="01075XXXXXX99">
+                        </div>
+                        <div class="form-group">
+                            <label for="setting-company-address">ที่อยู่บริษัท<span class="required-star">*</span></label>
+                            <textarea id="setting-company-address" name="setting-company-address" rows="3">123 ถนนตัวอย่าง แขวงตัวอย่าง เขตตัวอย่าง กรุงเทพฯ 10000</textarea>
+                        </div>
+                         <div class="form-row">
+                            <div class="form-group">
+                                <label for="setting-company-phone">เบอร์โทรศัพท์</label>
+                                <input type="tel" id="setting-company-phone" name="setting-company-phone" value="02-999-8888">
+                            </div>
+                            <div class="form-group">
+                                <label for="setting-company-email">อีเมลติดต่อ</label>
+                                <input type="email" id="setting-company-email" name="setting-company-email" value="contact@tradingcompany.co.th">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="setting-company-logo">โลโก้บริษัท (สำหรับเอกสาร)</label>
+                            <input type="file" id="setting-company-logo" name="setting-company-logo" accept="image/png, image/jpeg">
+                            <small id="current-company-logo" class="form-text text-muted">Current: logo.png</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">บันทึกข้อมูลบริษัท</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="tab-numbering" class="tab-content">
+                <h3>การตั้งค่าเลขที่เอกสาร (Running Numbers)</h3>
+                <form id="form-numbering-settings">
+                    <div class="form-section">
+                        <p>กำหนดรูปแบบและเลขที่เริ่มต้นของเอกสารต่างๆ</p>
+                        <div class="form-group">
+                            <label for="setting-qtn-prefix">Prefix ใบเสนอราคา (QTN)</label>
+                            <input type="text" id="setting-qtn-prefix" name="setting-qtn-prefix" value="QTN-YYYYMM-">
+                            <small class="form-text text-muted">ตัวอย่าง: QTN-202311-0001 (YYYY=ปี, MM=เดือน)</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="setting-inv-prefix">Prefix ใบแจ้งหนี้ (INV)</label>
+                            <input type="text" id="setting-inv-prefix" name="setting-inv-prefix" value="INV/YYYY/">
+                             <small class="form-text text-muted">ตัวอย่าง: INV/2023/00001</small>
+                        </div>
+                        <!-- Add more for PO, DN, IO etc. -->
+                        <button type="submit" class="btn btn-primary">บันทึกการตั้งค่าเลขที่เอกสาร</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="tab-notifications" class="tab-content">
+                <h3>การตั้งค่าการแจ้งเตือน</h3>
+                <form id="form-notification-settings">
+                    <div class="form-section">
+                        <h4>การแจ้งเตือนทางอีเมล</h4>
+                        <div class="form-group">
+                            <input type="checkbox" id="notify-qtn-accepted" name="notify-qtn-accepted" checked>
+                            <label for="notify-qtn-accepted" style="font-weight:normal; display:inline;">แจ้งเตือนเมื่อ QTN ได้รับการยอมรับจากลูกค้า</label>
+                        </div>
+                        <div class="form-group">
+                            <input type="checkbox" id="notify-po-received" name="notify-po-received" checked>
+                            <label for="notify-po-received" style="font-weight:normal; display:inline;">แจ้งเตือนเมื่อได้รับ PO ใหม่จากลูกค้า</label>
+                        </div>
+                        <div class="form-group">
+                            <input type="checkbox" id="notify-stock-low" name="notify-stock-low">
+                            <label for="notify-stock-low" style="font-weight:normal; display:inline;">แจ้งเตือนเมื่อสินค้าในสต็อกต่ำกว่า Min Stock</label>
+                        </div>
+                        <div class="form-group">
+                            <label for="notify-email-recipient">อีเมลผู้รับการแจ้งเตือนหลัก (Admin/Sales Manager)</label>
+                            <input type="email" id="notify-email-recipient" name="notify-email-recipient" value="admin@example.com, sales_manager@example.com">
+                        </div>
+                        <button type="submit" class="btn btn-primary">บันทึกการตั้งค่าการแจ้งเตือน</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="tab-integrations" class="tab-content">
+                <h3>การตั้งค่าการเชื่อมต่อภายนอก</h3>
+                <div class="form-section">
+                    <div class="form-group">
+                        <label for="setting-factory-api-key">API Key กรมโรงงาน (ถ้ามี)</label>
+                        <input type="text" id="setting-factory-api-key" name="setting-factory-api-key" placeholder="xxxxxxxxxxxxxxx">
+                    </div>
+                    <div class="form-group">
+                        <label for="setting-map-api-key">Google Maps API Key (ถ้ามี)</label>
+                        <input type="text" id="setting-map-api-key" name="setting-map-api-key" placeholder="AIzaSyxxxxxxxxxxxxxxx">
+                    </div>
+                    <div class="form-group">
+                        <label for="setting-email-service">Email Service Provider</label>
+                        <select id="setting-email-service" name="setting-email-service">
+                            <option value="default_server">Default Server Mail</option>
+                            <option value="sendgrid">SendGrid</option>
+                            <option value="mailgun">Mailgun</option>
+                        </select>
+                        <textarea placeholder="API Key / Configuration for selected Email Service" rows="3" style="margin-top:10px;"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">บันทึกการตั้งค่าการเชื่อมต่อ</button>
+                </div>
+            </div>
+
+            <div id="tab-data" class="tab-content">
+                <h3>จัดการข้อมูล Master (หมวดหมู่ต่างๆ)</h3>
+                <div class="form-section">
+                    <h4>หมวดหมู่สินค้า (Product Categories)</h4>
+                    <div id="product-categories-list">
+                        <!-- Example: <span>สารเคมี <button class="btn btn-sm btn-danger">ลบ</button></span> -->
+                    </div>
+                    <input type="text" id="new-product-category-name" placeholder="ชื่อหมวดหมู่ใหม่">
+                    <button type="button" class="btn btn-secondary" id="btn-add-product-category">เพิ่มหมวดหมู่</button>
+                    <hr style="margin: 20px 0;">
+
+                    <h4>ประเภทลูกค้า (Customer Types)</h4>
+                     <div id="customer-types-list"></div>
+                    <input type="text" id="new-customer-type-name" placeholder="ชื่อประเภทลูกค้าใหม่">
+                    <button type="button" class="btn btn-secondary" id="btn-add-customer-type">เพิ่มประเภท</button>
+                    <!-- Add more for other master data like Payment Terms, Incoterms etc. -->
+                     <hr style="margin: 20px 0;">
+                    <button type="button" class="btn btn-primary">บันทึกการเปลี่ยนแปลงข้อมูล Master</button>
+                </div>
+            </div>
+
+
+        </div> <!-- End of #settings-page -->
+
+        <!-- Placeholder for other pages -->
+        <div id="dashboard-page" class="page-content hidden"><h2>Dashboard Content</h2></div>
+        <!-- ... more placeholder divs ... -->
+
+    </div>
+<style>
+    /* Additional styles for settings page tabs (can be moved to style.css) */
+    .settings-tabs {
+        margin-bottom: 20px;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 0;
+    }
+    .settings-tabs .tab-link {
+        background-color: transparent;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        font-size: 1em;
+        margin-right: 5px;
+        border-bottom: 3px solid transparent;
+        color: #555;
+    }
+    .settings-tabs .tab-link.active {
+        border-bottom: 3px solid #3498db;
+        font-weight: bold;
+        color: #3498db;
+    }
+    .settings-tabs .tab-link:hover {
+        color: #3498db;
+    }
+    .tab-content {
+        display: none; /* Hidden by default */
+        padding-top: 15px;
+    }
+    .tab-content.active {
+        display: block; /* Show active tab */
+    }
+    #product-categories-list span, #customer-types-list span {
+        display: inline-block;
+        background-color: #f0f0f0;
+        padding: 5px 10px;
+        margin: 5px;
+        border-radius: 4px;
+    }
+</style>
+<script>
+$(document).ready(function() {
+    // Load sidebar
+    $('.sidebar').load('nav.html')
+
+    function initializePageContent(pageTarget) {
+        $('#page-title').text($('#nav-' + pageTarget).text() || 'ตั้งค่าระบบ'); // Fallback title
+        $('.page-content').addClass('hidden');
+        $('#' + pageTarget + '-page').removeClass('hidden');
+
+        if (pageTarget === 'settings') {
+            $('#settings-page').removeClass('hidden');
+            // Activate the first tab by default
+            $('.settings-tabs .tab-link:first-child').addClass('active');
+            $('.tab-content:first-child').addClass('active');
+        }
+    }
+
+    // --- Settings Page Tabs ---
+    $('.settings-tabs .tab-link').on('click', function() {
+        var tabId = $(this).data('tab');
+
+        $('.settings-tabs .tab-link').removeClass('active');
+        $(this).addClass('active');
+
+        $('.tab-content').removeClass('active'); // Hide all tab content
+        $('#' + tabId).addClass('active');     // Show selected tab content
+    });
+
+    // --- Form Submissions (Simulated) ---
+    $('#form-general-settings, #form-company-settings, #form-numbering-settings, #form-notification-settings, #tab-integrations form').on('submit', function(e) {
+        e.preventDefault();
+        var formId = $(this).attr('id') || 'integration-form';
+        var formData = $(this).serializeArray();
+        console.log('Settings Saved (' + formId + '):', formData);
+        alert('การตั้งค่าสำหรับ "' + $(this).closest('.tab-content').find('h3:first').text() + '" ถูกบันทึกแล้ว! (จำลอง)');
+    });
+
+    // --- User Management (Simulated) ---
+    $('#btn-add-new-user').on('click', function() {
+        alert('แสดงฟอร์มสำหรับเพิ่มผู้ใช้งานใหม่ (จำลอง)');
+        // In a real app, this would open a modal or navigate to a user creation form
+    });
+    $('#users-table-body').on('click', '.btn-danger', function(e){
+        e.preventDefault();
+        if(confirm('คุณแน่ใจหรือไม่ว่าต้องการลบผู้ใช้งานนี้?')){
+            $(this).closest('tr').remove();
+            alert('ผู้ใช้งานถูกลบแล้ว (จำลอง)');
+        }
+    });
+
+
+    // --- Master Data Management (Simulated) ---
+    function loadMasterData(type) {
+        // Simulate loading existing categories/types
+        var items = [];
+        var listContainerId = '';
+        if (type === 'product_category') {
+            items = ['สารเคมี', 'ตัวทำละลาย', 'อุปกรณ์', 'บรรจุภัณฑ์'];
+            listContainerId = '#product-categories-list';
+        } else if (type === 'customer_type') {
+            items = ['โรงงานอุตสาหกรรม', 'ตัวแทนจำหน่าย', 'ลูกค้าโครงการ'];
+            listContainerId = '#customer-types-list';
+        }
+
+        $(listContainerId).empty();
+        items.forEach(function(item) {
+            $(listContainerId).append(`<span>${item} <button class="btn btn-sm btn-danger btn-remove-master-item" data-type="${type}" data-item="${item}">×</button></span> `);
+        });
+    }
+    loadMasterData('product_category');
+    loadMasterData('customer_type');
+
+    $('#btn-add-product-category').on('click', function() {
+        var newItem = $('#new-product-category-name').val().trim();
+        if (newItem) {
+            $('#product-categories-list').append(`<span>${newItem} <button class="btn btn-sm btn-danger btn-remove-master-item" data-type="product_category" data-item="${newItem}">×</button></span> `);
+            $('#new-product-category-name').val('');
+        } else {
+            alert('กรุณาใส่ชื่อหมวดหมู่');
+        }
+    });
+    $('#btn-add-customer-type').on('click', function() {
+        var newItem = $('#new-customer-type-name').val().trim();
+        if (newItem) {
+            $('#customer-types-list').append(`<span>${newItem} <button class="btn btn-sm btn-danger btn-remove-master-item" data-type="customer_type" data-item="${newItem}">×</button></span> `);
+            $('#new-customer-type-name').val('');
+        } else {
+            alert('กรุณาใส่ชื่อประเภทลูกค้า');
+        }
+    });
+
+    $(document).on('click', '.btn-remove-master-item', function(){
+        if(confirm('คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้? (' + $(this).data('item') + ')')){
+            $(this).parent('span').remove();
+            alert('รายการ "' + $(this).data('item') + '" ถูกลบแล้ว (จำลอง)');
+        }
+    });
+
+    $('#tab-data button.btn-primary').on('click', function(){
+        alert('การเปลี่ยนแปลงข้อมูล Master ถูกบันทึกแล้ว (จำลอง)');
+    });
+
+
+    // --- Company Logo Preview (Optional) ---
+    $('#setting-company-logo').on('change', function(){
+        var fileName = $(this).val().split('\\').pop();
+        if(fileName){
+            $('#current-company-logo').text('ไฟล์ที่เลือก: ' + fileName + ' (จะแสดงผลหลังบันทึก)');
+        } else {
+            $('#current-company-logo').text('Current: logo.png'); // Reset to placeholder
+        }
+    });
+
+
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading System Mockup - Reports</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link to your external CSS -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --> <!-- For charts -->
+</head>
+<body>
+    <div class="sidebar">
+        <!-- Content from nav.html will be loaded here -->
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1 id="page-title">รายงาน (Reports)</h1>
+            <div class="user-info">
+                User: Manager01 | <a href="#">Logout</a>
+            </div>
+        </div>
+
+        <!-- Reports Landing/Selection Page -->
+        <div id="reports-selection-page" class="page-content">
+            <h2>เลือกประเภทรายงาน</h2>
+            <p>เลือกรายงานที่คุณต้องการดูจากรายการด้านล่าง:</p>
+
+            <div class="form-row" style="gap: 20px; flex-wrap: wrap;">
+                <!-- Sales Reports -->
+                <div class="form-group col-third report-category-card">
+                    <h3><i class="fas fa-chart-line"></i> รายงานการขาย (Sales)</h3>
+                    <ul>
+                        <li><a href="#" class="report-link" data-report-type="sales_forecast">รายงาน Sale Forecast</a></li>
+                        <li><a href="#" class="report-link" data-report-type="sales_by_product">รายงานยอดขายแยกตามสินค้า</a></li>
+                        <li><a href="#" class="report-link" data-report-type="sales_by_customer">รายงานยอดขายแยกตามลูกค้า</a></li>
+                        <li><a href="#" class="report-link" data-report-type="sales_by_salesperson">รายงานยอดขายแยกตามพนักงานขาย</a></li>
+                        <li><a href="#" class="report-link" data-report-type="qtn_status_summary">สรุปสถานะใบเสนอราคา</a></li>
+                    </ul>
+                </div>
+
+                <!-- Profitability Reports -->
+                <div class="form-group col-third report-category-card">
+                    <h3><i class="fas fa-dollar-sign"></i> รายงานกำไร-ขาดทุน (Profitability)</h3>
+                    <ul>
+                        <li><a href="#" class="report-link" data-report-type="profit_by_product">รายงานกำไรขาดทุนแยกตามสินค้า</a></li>
+                        <li><a href="#" class="report-link" data-report-type="profit_by_io">รายงานกำไรขาดทุนแยกตามโครงการ (IO)</a></li>
+                        <li><a href="#" class="report-link" data-report-type="profit_by_customer">รายงานกำไรขาดทุนแยกตามลูกค้า</a></li>
+                    </ul>
+                </div>
+
+                <!-- Inventory Reports -->
+                <div class="form-group col-third report-category-card">
+                     <h3><i class="fas fa-boxes"></i> รายงานสต็อกสินค้า (Inventory)</h3>
+                    <ul>
+                        <li><a href="#" class="report-link" data-report-type="stock_on_hand">รายงานสินค้าคงคลังปัจจุบัน</a></li>
+                        <li><a href="#" class="report-link" data-report-type="slow_moving_stock">รายงานสินค้าคงค้างนาน (Slow-Moving)</a></li>
+                        <li><a href="#" class="report-link" data-report-type="stock_valuation">รายงานมูลค่าสต็อกสินค้า</a></li>
+                        <li><a href="#" class="report-link" data-report-type="stock_movement_history">ประวัติการเคลื่อนไหวสต็อก</a></li>
+                    </ul>
+                </div>
+
+                <!-- Customer Reports -->
+                 <div class="form-group col-third report-category-card">
+                    <h3><i class="fas fa-users"></i> รายงานลูกค้า (Customer)</h3>
+                    <ul>
+                        <li><a href="#" class="report-link" data-report-type="customer_list_detail">รายชื่อลูกค้าพร้อมรายละเอียด</a></li>
+                        <li><a href="#" class="report-link" data-report-type="top_customers_by_value">ลูกค้า Top 10 (ตามมูลค่าสั่งซื้อ)</a></li>
+                        <li><a href="#" class="report-link" data-report-type="ar_aging_report">รายงานอายุลูกหนี้ (AR Aging)</a></li>
+                    </ul>
+                </div>
+
+                 <!-- Purchasing Reports -->
+                <div class="form-group col-third report-category-card">
+                    <h3><i class="fas fa-shopping-cart"></i> รายงานการจัดซื้อ (Purchasing)</h3>
+                    <ul>
+                        <li><a href="#" class="report-link" data-report-type="po_to_supplier_summary">สรุปคำสั่งซื้อไปยัง Supplier</a></li>
+                        <li><a href="#" class="report-link" data-report-type="purchase_by_supplier">ยอดสั่งซื้อแยกตาม Supplier</a></li>
+                    </ul>
+                </div>
+
+                <!-- Financial Reports (subset of Cash Flow potentially) -->
+                <div class="form-group col-third report-category-card">
+                     <h3><i class="fas fa-file-invoice-dollar"></i> รายงานทางการเงิน (Financial)</h3>
+                    <ul>
+                        <li><a href="#" class="report-link" data-report-type="cashflow_summary_report">สรุปภาพรวม Cash Flow (อ้างอิงจากหน้า Cash Flow)</a></li>
+                        <li><a href="#" class="report-link" data-report-type="expense_report">รายงานค่าใช้จ่าย (ตามหมวดหมู่/โครงการ)</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Generic Report Display Page (Initially Hidden) -->
+        <div id="report-display-page" class="page-content hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2 id="report-title-display">ชื่อรายงาน</h2>
+                <button class="btn btn-secondary" id="btn-back-to-reports">« กลับไปหน้ารายงานทั้งหมด</button>
+            </div>
+
+            <div class="filter-bar" id="report-filter-bar" style="margin-top: 15px;">
+                <!-- Filters specific to the report will be dynamically added here -->
+                <label>ช่วงวันที่:</label>
+                <input type="date" id="report-date-from">
+                <span>ถึง</span>
+                <input type="date" id="report-date-to">
+                <button class="btn btn-primary" id="btn-generate-report">แสดงรายงาน</button>
+                <button class="btn btn-secondary" id="btn-export-report" style="margin-left:10px;">Export to Excel</button>
+            </div>
+
+            <div id="report-content-area" class="form-section" style="margin-top: 20px; min-height: 300px;">
+                <!-- Report data (table, chart) will be displayed here -->
+                <p style="text-align:center; padding-top:50px;"><i>กรุณาเลือก Filter แล้วกด "แสดงรายงาน"</i></p>
+            </div>
+        </div>
+
+
+        <!-- Placeholder for other pages -->
+        <div id="dashboard-page" class="page-content hidden"><h2>Dashboard Content</h2></div>
+        <!-- ... more placeholder divs ... -->
+
+    </div>
+    <!-- Font Awesome for icons (optional) -->
+    <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
+<style>
+    /* Additional styles for report page (can be moved to style.css) */
+    .report-category-card {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        min-width: calc(33.333% - 20px); /* Adjust for gap */
+        margin-bottom: 20px; /* Add margin if not using flexbox gap for this */
+    }
+    .report-category-card h3 {
+        margin-top: 0;
+        color: #2980b9;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+        font-size: 1.15em;
+    }
+    .report-category-card h3 i {
+        margin-right: 8px;
+        color: #3498db;
+    }
+    .report-category-card ul {
+        list-style: none;
+        padding-left: 0;
+    }
+    .report-category-card ul li {
+        margin-bottom: 8px;
+    }
+    .report-category-card ul li a {
+        text-decoration: none;
+        color: #34495e;
+        padding: 5px 0;
+        display: block;
+        transition: color 0.2s ease;
+    }
+    .report-category-card ul li a:hover {
+        color: #3498db;
+        text-decoration: underline;
+    }
+</style>
+
+<script>
+$(document).ready(function() {
+    // Load sidebar
+    $('.sidebar').load('nav.html');
+    function initializePageContent(pageTarget) {
+        $('#page-title').text($('#nav-' + pageTarget).text() || 'รายงาน'); // Fallback title
+        $('.page-content').addClass('hidden');
+        $('#' + pageTarget + '-page').removeClass('hidden');
+
+        if (pageTarget === 'reports') {
+            $('#reports-selection-page').removeClass('hidden'); // Show selection by default for reports
+            $('#report-display-page').addClass('hidden'); // Ensure display page is hidden initially
+        }
+    }
+
+
+    // --- Reports Selection Page Actions ---
+    $('.report-link').on('click', function(e) {
+        e.preventDefault();
+        var reportType = $(this).data('report-type');
+        var reportName = $(this).text();
+
+        $('#reports-selection-page').addClass('hidden');
+        $('#report-display-page').removeClass('hidden');
+        $('#report-title-display').text(reportName);
+        $('#report-content-area').html('<p style="text-align:center; padding-top:50px;"><i>กรุณาเลือก Filter แล้วกด "แสดงรายงาน"</i></p>');
+
+        // Dynamically add filters based on reportType (example)
+        var filterHtml = `
+            <label>ช่วงวันที่:</label>
+            <input type="date" id="report-date-from" value="${new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0]}">
+            <span>ถึง</span>
+            <input type="date" id="report-date-to" value="${new Date().toISOString().split('T')[0]}">
+        `;
+        if (reportType === 'sales_by_product' || reportType === 'profit_by_product' || reportType === 'stock_on_hand') {
+            filterHtml += `
+                <label style="margin-left:15px;">หมวดหมู่:</label>
+                <select id="report-filter-category"><option value="">ทั้งหมด</option><option value="chem">สารเคมี</option><option value="solvent">ตัวทำละลาย</option></select>
+            `;
+        }
+        if (reportType === 'sales_by_customer' || reportType === 'profit_by_customer' || reportType === 'top_customers_by_value') {
+             filterHtml += `
+                <label style="margin-left:15px;">ลูกค้า:</label>
+                <input type="text" id="report-filter-customer" placeholder="ค้นหาลูกค้า">
+            `;
+        }
+        filterHtml += `
+            <button class="btn btn-primary" id="btn-generate-report" data-report="${reportType}">แสดงรายงาน</button>
+            <button class="btn btn-secondary" id="btn-export-report" style="margin-left:10px;" data-report="${reportType}">Export to Excel</button>
+        `;
+        $('#report-filter-bar').html(filterHtml);
+    });
+
+    $('#btn-back-to-reports').on('click', function() {
+        $('#report-display-page').addClass('hidden');
+        $('#reports-selection-page').removeClass('hidden');
+        $('#page-title').text('รายงาน (Reports)');
+    });
+
+    // --- Report Display Page Actions ---
+    // Use event delegation for dynamically added button
+    $(document).on('click', '#btn-generate-report', function() {
+        var reportType = $(this).data('report');
+        var dateFrom = $('#report-date-from').val();
+        var dateTo = $('#report-date-to').val();
+        var category = $('#report-filter-category').val(); // May not exist for all reports
+        var customer = $('#report-filter-customer').val(); // May not exist for all reports
+
+        $('#report-content-area').html('<p style="text-align:center; padding-top:50px;"><i><i class="fas fa-spinner fa-spin"></i> กำลังสร้างรายงาน...</i></p>');
+        console.log('Generating report:', reportType, 'From:', dateFrom, 'To:', dateTo, 'Category:', category, 'Customer:', customer);
+
+        // Simulate API call and display report
+        setTimeout(function() {
+            displayReportContent(reportType, {dateFrom, dateTo, category, customer});
+        }, 1000);
+    });
+
+    $(document).on('click', '#btn-export-report', function() {
+        var reportType = $(this).data('report');
+        alert('จำลองการ Export รายงาน ' + reportType + ' เป็น Excel...');
+        // In a real app, trigger a file download
+    });
+
+
+    function displayReportContent(reportType, filters) {
+        var htmlContent = `<h4>รายงาน: ${$('#report-title-display').text()}</h4>`;
+        htmlContent += `<p>ช่วงวันที่: ${filters.dateFrom || 'N/A'} ถึง ${filters.dateTo || 'N/A'}`;
+        if(filters.category) htmlContent += ` | หมวดหมู่: ${filters.category || 'ทั้งหมด'}`;
+        if(filters.customer) htmlContent += ` | ลูกค้า: ${filters.customer || 'ทั้งหมด'}`;
+        htmlContent += `</p>`;
+
+        // Example: Generate a simple table
+        htmlContent += '<table style="margin-top:15px;"><thead><tr>';
+        if (reportType === 'sales_forecast') {
+            htmlContent += '<th>เดือนคาดการณ์</th><th>ยอดขายคาดการณ์ (บาท)</th><th>โอกาส (%)</th></tr></thead><tbody>';
+            htmlContent += '<tr><td>พฤศจิกายน 2023</td><td style="text-align:right;">500,000.00</td><td style="text-align:center;">75%</td></tr>';
+            htmlContent += '<tr><td>ธันวาคม 2023</td><td style="text-align:right;">850,000.00</td><td style="text-align:center;">60%</td></tr>';
+        } else if (reportType === 'sales_by_product') {
+            htmlContent += '<th>รหัสสินค้า</th><th>ชื่อสินค้า</th><th>จำนวนขาย</th><th>ยอดขาย (บาท)</th></tr></thead><tbody>';
+            htmlContent += '<tr><td>PROD001</td><td>Chemical A</td><td style="text-align:right;">120</td><td style="text-align:right;">3,360,000.00</td></tr>';
+            htmlContent += '<tr><td>PROD002</td><td>Solvent B</td><td style="text-align:right;">85</td><td style="text-align:right;">1,024,250.00</td></tr>';
+        } else if (reportType === 'profit_by_io') {
+            htmlContent += '<th>เลขที่ IO</th><th>ชื่อโครงการ</th><th>รายรับ</th><th>ต้นทุน</th><th>กำไร</th><th>% กำไร</th></tr></thead><tbody>';
+            htmlContent += '<tr><td>IO-2023-055</td><td>ส่งของ บ. ABC</td><td style="text-align:right;">150,000.00</td><td style="text-align:right;">110,000.00</td><td style="text-align:right; color:green;">40,000.00</td><td style="text-align:right;">26.67%</td></tr>';
+             htmlContent += '<tr><td>IO-2023-050</td><td>งาน XYZ</td><td style="text-align:right;">85,500.00</td><td style="text-align:right;">70,000.00</td><td style="text-align:right; color:green;">15,500.00</td><td style="text-align:right;">18.13%</td></tr>';
+        } else {
+            htmlContent += '<th>ข้อมูลตัวอย่าง 1</th><th>ข้อมูลตัวอย่าง 2</th></tr></thead><tbody>';
+            htmlContent += '<tr><td>ตัวอย่าง A</td><td>123</td></tr><tr><td>ตัวอย่าง B</td><td>456</td></tr>';
+        }
+        htmlContent += '</tbody></table>';
+        $('#report-content-area').html(htmlContent);
+    }
+
+});
+</script>
+
+</body>
+</html>

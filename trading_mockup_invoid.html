@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading System Mockup - Invoices</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link to your external CSS -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+  <div class="sidebar">
+
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1 id="page-title">ใบแจ้งหนี้ (Invoices)</h1>
+            <div class="user-info">
+                User: Account01 | <a href="#">Logout</a>
+            </div>
+        </div>
+
+        <!-- Invoice List Page -->
+        <div id="invoice-list-page" class="page-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>รายการใบแจ้งหนี้</h2>
+                <button class="btn btn-primary" id="btn-show-create-invoice"> + สร้างใบแจ้งหนี้ใหม่</button>
+            </div>
+
+            <div class="filter-bar">
+                <input type="text" id="filter-invoice-search" placeholder="ค้นหาเลขที่ใบแจ้งหนี้, ลูกค้า...">
+                <select id="filter-invoice-status">
+                    <option value="">สถานะทั้งหมด</option>
+                    <option value="draft">ฉบับร่าง</option>
+                    <option value="billed">วางบิลแล้ว</option>
+                    <option value="partially_paid">ชำระบางส่วน</option>
+                    <option value="paid">ชำระแล้ว</option>
+                    <option value="overdue">เกินกำหนดชำระ</option>
+                    <option value="cancelled">ยกเลิก</option>
+                </select>
+                <input type="date" id="filter-invoice-date-from" title="จากวันที่ใบแจ้งหนี้">
+                <input type="date" id="filter-invoice-date-to" title="ถึงวันที่ใบแจ้งหนี้">
+                <input type="date" id="filter-invoice-due-date" title="วันที่ครบกำหนดชำระ">
+                <button class="btn btn-secondary" id="btn-filter-invoice">ค้นหา</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>เลขที่ใบแจ้งหนี้</th>
+                        <th>วันที่</th>
+                        <th>ลูกค้า</th>
+                        <th>อ้างอิง IO / Cust. PO</th>
+                        <th>ยอดรวม</th>
+                        <th>วันครบกำหนด</th>
+                        <th>สถานะ</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="invoice-table-body">
+                    <!-- Sample Data -->
+                    <tr>
+                        <td>INV2023-00781</td>
+                        <td>2023-11-05</td>
+                        <td>บ. ABC จำกัด</td>
+                        <td>IO-2023-055</td>
+                        <td>150,000.00</td>
+                        <td>2023-12-05</td>
+                        <td style="color:orange;">วางบิลแล้ว</td>
+                        <td class="action-buttons">
+                            <a href="#" class="btn btn-secondary btn-sm btn-view-invoice">ดู</a>
+                            <a href="#" class="btn btn-secondary btn-sm btn-edit-invoice">แก้</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>INV2023-00780</td>
+                        <td>2023-10-20</td>
+                        <td>บ. XYZ Trading</td>
+                        <td>IO-2023-050</td>
+                        <td>85,500.00</td>
+                        <td>2023-11-20</td>
+                        <td style="color:green; font-weight:bold;">ชำระแล้ว</td>
+                        <td class="action-buttons">
+                            <a href="#" class="btn btn-secondary btn-sm btn-view-invoice">ดู</a>
+                            <!-- Edit might be disabled for paid invoices -->
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="text-align: center; margin-top: 20px;">
+                [Pagination: << < 1 2 3 > >> ]
+            </div>
+        </div>
+
+        <!-- Create/Edit Invoice Page (Initially Hidden) -->
+        <div id="create-edit-invoice-page" class="page-content hidden">
+            <h2 id="invoice-form-title">สร้างใบแจ้งหนี้ใหม่</h2>
+            <form id="invoice-form">
+                <input type="hidden" id="invoice-id" name="invoice-id">
+
+                <div class="form-section">
+                    <h3>ข้อมูลใบแจ้งหนี้</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="inv-number">เลขที่ใบแจ้งหนี้<span class="required-star">*</span></label>
+                            <input type="text" id="inv-number" name="inv-number" placeholder="(ระบบอาจสร้างให้อัตโนมัติ)" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="inv-date">วันที่ใบแจ้งหนี้<span class="required-star">*</span></label>
+                            <input type="date" id="inv-date" name="inv-date" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="inv-customer-po-ref">อ้างอิง Customer PO / IO<span class="required-star">*</span></label>
+                            <input type="text" id="inv-customer-po-ref" name="inv-customer-po-ref" placeholder="ค้นหา IO หรือ Customer PO ที่จะวางบิล" required>
+                            <!-- This should ideally be a lookup for billable orders/deliveries -->
+                        </div>
+                        <div class="form-group">
+                            <label for="inv-customer-name">ลูกค้า (แสดงอัตโนมัติ)</label>
+                            <input type="text" id="inv-customer-name" name="inv-customer-name" readonly>
+                        </div>
+                    </div>
+                     <div class="form-row">
+                        <div class="form-group">
+                            <label for="inv-due-date">วันครบกำหนดชำระ<span class="required-star">*</span></label>
+                            <input type="date" id="inv-due-date" name="inv-due-date" required>
+                        </div>
+                         <div class="form-group">
+                            <label for="inv-credit-term">Credit Term (วัน)</label>
+                            <input type="number" id="inv-credit-term" name="inv-credit-term" min="0" placeholder="(คำนวณจากวันที่ + Due Date)">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>รายการในใบแจ้งหนี้</h3>
+                    <p class="form-text text-muted">(รายการจะถูกดึงมาจาก IO/PO หรือ Delivery Note ที่อ้างอิง)</p>
+                    <table class="item-table" id="inv-item-table">
+                        <thead>
+                            <tr>
+                                <th style="width:40%">รายละเอียดสินค้า/บริการ<span class="required-star">*</span></th>
+                                <th style="width:15%">จำนวน<span class="required-star">*</span></th>
+                                <th style="width:15%">ราคา/หน่วย<span class="required-star">*</span></th>
+                                <th style="width:15%">ส่วนลด (บาท)</th>
+                                <th style="width:15%">ยอดรวม</th>
+                                <!-- No "Action" to remove, items are usually fixed from source -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Item rows will be populated based on reference -->
+                        </tbody>
+                    </table>
+                     <!-- Potentially a button to "Add Custom Line Item" for adjustments/fees -->
+                </div>
+
+                <div class="form-section">
+                    <h3>สรุปยอดเงิน</h3>
+                     <div class="form-row">
+                        <div class="form-group col-half">
+                            <label>ยอดรวมก่อนภาษี (Subtotal):</label>
+                            <p id="inv-subtotal" style="font-size: 1.1em;">0.00 บาท</p>
+                        </div>
+                        <div class="form-group col-half">
+                            <label for="inv-discount-total">ส่วนลดท้ายบิล (บาท):</label>
+                            <input type="number" id="inv-discount-total" name="inv-discount-total" value="0" min="0" step="any">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-half">
+                            <label>ยอดหลังหักส่วนลด:</label>
+                            <p id="inv-total-after-discount" style="font-size: 1.1em;">0.00 บาท</p>
+                        </div>
+                        <div class="form-group col-half">
+                            <label for="inv-vat-rate">อัตราภาษีมูลค่าเพิ่ม (%):</label>
+                            <input type="number" id="inv-vat-rate" name="inv-vat-rate" value="7" min="0" max="100" step="1">
+                        </div>
+                    </div>
+                     <div class="form-row">
+                        <div class="form-group col-half">
+                            <label>ภาษีมูลค่าเพิ่ม (VAT):</label>
+                            <p id="inv-vat-amount" style="font-size: 1.1em;">0.00 บาท</p>
+                        </div>
+                        <div class="form-group col-half">
+                            <label style="font-weight:bold;">ยอดรวมสุทธิที่ต้องชำระ:</label>
+                            <p id="inv-grandtotal" style="font-weight:bold; font-size: 1.3em; color: #c0392b;">0.00 บาท</p>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-section">
+                    <h3>ข้อมูลการชำระเงินและสถานะ</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="inv-status">สถานะใบแจ้งหนี้</label>
+                            <select id="inv-status" name="inv-status">
+                                <option value="draft">ฉบับร่าง (Draft)</option>
+                                <option value="billed">วางบิลแล้ว (Billed)</option>
+                                <option value="partially_paid">ชำระบางส่วน (Partially Paid)</option>
+                                <option value="paid">ชำระแล้ว (Paid)</option>
+                                <option value="overdue">เกินกำหนดชำระ (Overdue)</option>
+                                <option value="cancelled">ยกเลิก (Cancelled)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="inv-payment-date">วันที่ชำระเงิน</label>
+                            <input type="date" id="inv-payment-date" name="inv-payment-date">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inv-payment-ref">อ้างอิงการชำระเงิน / หมายเหตุการชำระ</label>
+                        <input type="text" id="inv-payment-ref" name="inv-payment-ref">
+                    </div>
+                </div>
+
+                 <div class="form-section">
+                    <h3>หมายเหตุท้ายบิล</h3>
+                    <div class="form-group">
+                        <label for="inv-notes">หมายเหตุ (จะแสดงในใบแจ้งหนี้)</label>
+                        <textarea id="inv-notes" name="inv-notes" rows="3" placeholder="เช่น เงื่อนไขการชำระเงิน, เลขที่บัญชี"></textarea>
+                    </div>
+                </div>
+
+                <div style="text-align: right; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-invoice">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary">บันทึกใบแจ้งหนี้</button>
+                    <button type="button" class="btn btn-primary" id="btn-print-invoice" style="margin-left:10px;">พิมพ์ใบแจ้งหนี้/ใบกำกับ</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Placeholder for other pages -->
+        <div id="dashboard-page" class="page-content hidden"><h2>Dashboard Content</h2></div>
+        <!-- ... more placeholder divs ... -->
+    </div>
+
+<script>
+$(document).ready(function() {
+
+        $('.sidebar').load('nav.html');
+
+    // --- THIS IS WHERE YOUR SIDEBAR LOADING AND NAVIGATION SCRIPT WOULD GO ---
+    // For example, if you had a function to initialize navigation:
+    // function initializeNavigation(activePageId) {
+    //     $('.sidebar ul li a').removeClass('active');
+    //     $('#' + activePageId).addClass('active');
+    //     $('#page-title').text($('#' + activePageId).text());
+    //
+    //     $('.page-content').addClass('hidden');
+    //     var pageTarget = $('#' + activePageId).data('page');
+    //     $('#' + pageTarget + '-page').removeClass('hidden');
+    //
+    //     if (pageTarget === 'invoices') {
+    //          $('#invoice-list-page').removeClass('hidden');
+    //     }
+    // }
+    // initializeNavigation('nav-invoices'); // Call it with the ID of the invoices nav link
+    //
+    // $('.sidebar').on('click', 'ul li a', function(e) {
+    //     e.preventDefault();
+    //     initializeNavigation($(this).attr('id'));
+    // });
+    // --- END OF HYPOTHETICAL NAVIGATION SCRIPT ---
+
+    // Fallback if sidebar/nav script isn't fully set up for this standalone example:
+    $('#invoice-list-page').removeClass('hidden'); // Show invoice list by default for this example.
+
+    // --- Invoice List Page Actions ---
+    $('#btn-show-create-invoice').on('click', function() {
+        $('.page-content').addClass('hidden');
+        $('#create-edit-invoice-page').removeClass('hidden');
+        $('#invoice-form-title').text('สร้างใบแจ้งหนี้ใหม่');
+        $('#invoice-form')[0].reset();
+        $('#invoice-id').val('');
+        $('#inv-item-table tbody').empty();
+        $('#inv-number').val('INV' + new Date().getFullYear() + '-' + String(Math.floor(Math.random() * 100000)).padStart(5, '0')); // Auto-generate INV#
+        $('#inv-vat-rate').val(7); // Default VAT
+        calculateInvoiceTotals();
+        // Set default invoice date and due date
+        var today = new Date().toISOString().split('T')[0];
+        $('#inv-date').val(today);
+        var dueDate = new Date();
+        dueDate.setDate(dueDate.getDate() + 30); // Default 30 days credit
+        $('#inv-due-date').val(dueDate.toISOString().split('T')[0]);
+        $('#inv-credit-term').val(30);
+    });
+
+    $('#invoice-table-body').on('click', '.btn-edit-invoice', function(e) {
+        e.preventDefault();
+        var invoiceId = $(this).closest('tr').find('td:first-child').text();
+        alert('กำลังแก้ไขใบแจ้งหนี้: ' + invoiceId + ' (ฟังก์ชันนี้ต้องดึงข้อมูลจริง)');
+
+        $('.page-content').addClass('hidden');
+        $('#create-edit-invoice-page').removeClass('hidden');
+        $('#invoice-form-title').text('แก้ไขใบแจ้งหนี้ #' + invoiceId);
+        $('#invoice-id').val(invoiceId);
+
+        // --- Simulate loading data for INV2023-00781 ---
+        if (invoiceId === 'INV2023-00781') {
+            $('#inv-number').val('INV2023-00781');
+            $('#inv-date').val('2023-11-05');
+            $('#inv-customer-po-ref').val('IO-2023-055');
+            // Simulate populating items from IO-2023-055
+            populateInvoiceFormFromOrderRef('IO-2023-055', [
+                { description: 'Chemical A (Lot X)', qty: 50, price: 2800.00, discount: 0 }, // 140000
+                { description: 'ค่าดำเนินการและขนส่ง', qty: 1, price: 10000.00, discount: 0 } // 10000
+            ]); // Subtotal 150000
+            $('#inv-customer-name').val('บ. ABC จำกัด');
+            $('#inv-due-date').val('2023-12-05');
+            $('#inv-credit-term').val(30);
+            $('#inv-discount-total').val(0);
+            $('#inv-vat-rate').val(7);
+            $('#inv-status').val('billed');
+            $('#inv-notes').val('กรุณาชำระภายในวันที่กำหนด\nธนาคาร XXX เลขที่บัญชี YYY');
+        } else {
+            $('#invoice-form')[0].reset();
+            $('#inv-item-table tbody').empty();
+            $('#inv-number').val('INV' + new Date().getFullYear() + '-' + String(Math.floor(Math.random() * 100000)).padStart(5, '0'));
+            $('#inv-vat-rate').val(7);
+        }
+        calculateInvoiceTotals();
+    });
+
+    $('#invoice-table-body').on('click', '.btn-view-invoice', function(e) {
+        e.preventDefault();
+        var invoiceId = $(this).closest('tr').find('td:first-child').text();
+        alert('กำลังดูใบแจ้งหนี้: ' + invoiceId + ' (แสดงรายละเอียดแบบ Read-only / พิมพ์)');
+    });
+
+
+    // --- Create/Edit Invoice Page ---
+    $('#btn-cancel-invoice').on('click', function() {
+        $('.page-content').addClass('hidden');
+        $('#invoice-list-page').removeClass('hidden');
+        $('#page-title').text('ใบแจ้งหนี้ (Invoices)');
+    });
+
+    $('#invoice-form').on('submit', function(e) {
+        e.preventDefault();
+        var invoiceId = $('#invoice-id').val();
+        var action = invoiceId ? 'แก้ไข' : 'สร้าง';
+
+        var formData = $(this).serializeArray();
+        console.log(`Invoice Form Data (${action}):`, formData);
+        var items = [];
+        $('#inv-item-table tbody tr').each(function() {
+            items.push({
+                description: $(this).find('.inv-item-desc').val(),
+                quantity: parseFloat($(this).find('.inv-item-qty').val()) || 0,
+                unit_price: parseFloat($(this).find('.inv-item-price').val()) || 0,
+                discount_item: parseFloat($(this).find('.inv-item-discount').val()) || 0
+            });
+        });
+        console.log('Invoice Items:', items);
+        // In a real app, this would update AR, cash flow, etc.
+
+        alert(`ใบแจ้งหนี้ ${action}แล้ว! (ดู Console log)`);
+
+        $('.page-content').addClass('hidden');
+        $('#invoice-list-page').removeClass('hidden');
+        $('#page-title').text('ใบแจ้งหนี้ (Invoices)');
+        // In a real app, refresh the invoice list table
+    });
+
+    $('#btn-print-invoice').on('click', function(){
+        alert('จำลองการพิมพ์ใบแจ้งหนี้/ใบกำกับภาษี...');
+        // In a real app, generate PDF
+    });
+
+    // Simulate populating form based on IO/Customer PO reference
+    $('#inv-customer-po-ref').on('blur', function(){
+        var orderRef = $(this).val().toUpperCase();
+        $('#inv-item-table tbody').empty();
+
+        if (orderRef === 'IO-2023-055' || orderRef === 'CUST-PO-789') {
+            populateInvoiceFormFromOrderRef(orderRef, [
+                { description: 'สินค้าตาม PO CUST-PO-789 (Chemical A)', qty: 50, price: 2800.00, discount: 0 },
+                { description: 'ค่าดำเนินการและขนส่ง', qty: 1, price: 10000.00, discount: 0 }
+            ]);
+            $('#inv-customer-name').val('บ. ABC จำกัด');
+            // Set due date based on customer's credit term or default
+            var today = new Date($('#inv-date').val() || new Date());
+            var creditTerm = 30; // Get from customer master data
+            var dueDate = new Date(today);
+            dueDate.setDate(today.getDate() + creditTerm);
+            $('#inv-due-date').val(dueDate.toISOString().split('T')[0]);
+            $('#inv-credit-term').val(creditTerm);
+
+        } else if (orderRef === 'IO-2023-050') {
+             populateInvoiceFormFromOrderRef(orderRef, [
+                { description: 'สินค้าตาม PO XXX (Solvent B)', qty: 100, price: 855.00, discount: 0 }
+            ]);
+            $('#inv-customer-name').val('บ. XYZ Trading');
+            var today = new Date($('#inv-date').val() || new Date());
+            var creditTerm = 15;
+            var dueDate = new Date(today);
+            dueDate.setDate(today.getDate() + creditTerm);
+            $('#inv-due-date').val(dueDate.toISOString().split('T')[0]);
+            $('#inv-credit-term').val(creditTerm);
+        } else if (orderRef) {
+            $('#inv-customer-name').val('(ไม่พบข้อมูลอ้างอิง)');
+            $('#inv-item-table tbody').html('<tr><td colspan="5" style="text-align:center; color:red;">ไม่พบรายการสำหรับ IO/PO นี้</td></tr>');
+        } else {
+            $('#inv-customer-name').val('');
+        }
+        calculateInvoiceTotals();
+    });
+
+    function populateInvoiceFormFromOrderRef(orderRef, items) {
+        $('#inv-item-table tbody').empty();
+        if (items && items.length > 0) {
+            items.forEach(function(item, index) {
+                var itemTotal = (item.qty * item.price) - item.discount;
+                var newRow = `
+                    <tr>
+                        <td><input type="text" class="inv-item-desc" name="items[${index}][description]" value="${item.description}"></td>
+                        <td><input type="number" class="inv-item-qty" name="items[${index}][quantity]" value="${item.qty}" min="0" step="any"></td>
+                        <td><input type="number" class="inv-item-price" name="items[${index}][unit_price]" value="${item.price.toFixed(2)}" min="0" step="any"></td>
+                        <td><input type="number" class="inv-item-discount" name="items[${index}][discount_item]" value="${item.discount.toFixed(2)}" min="0" step="any"></td>
+                        <td class="inv-item-total">${itemTotal.toFixed(2)}</td>
+                    </tr>
+                `;
+                $('#inv-item-table tbody').append(newRow);
+            });
+        } else {
+             $('#inv-item-table tbody').html('<tr><td colspan="5" style="text-align:center; color:red;">ไม่พบรายการสำหรับ IO/PO นี้</td></tr>');
+        }
+    }
+
+    // Calculate totals
+    $('#inv-item-table').on('input', '.inv-item-qty, .inv-item-price, .inv-item-discount', calculateInvoiceTotals);
+    $('#inv-discount-total, #inv-vat-rate').on('input', calculateInvoiceTotals);
+
+    function calculateInvoiceTotals() {
+        var subtotal = 0;
+        $('#inv-item-table tbody tr').each(function() {
+            var qty = parseFloat($(this).find('.inv-item-qty').val()) || 0;
+            var price = parseFloat($(this).find('.inv-item-price').val()) || 0;
+            var discountItem = parseFloat($(this).find('.inv-item-discount').val()) || 0;
+            var itemTotal = (qty * price) - discountItem;
+            $(this).find('.inv-item-total').text(itemTotal.toFixed(2));
+            subtotal += itemTotal;
+        });
+        $('#inv-subtotal').text(subtotal.toFixed(2) + ' บาท');
+
+        var discountTotal = parseFloat($('#inv-discount-total').val()) || 0;
+        var totalAfterDiscount = subtotal - discountTotal;
+        $('#inv-total-after-discount').text(totalAfterDiscount.toFixed(2) + ' บาท');
+
+        var vatRate = parseFloat($('#inv-vat-rate').val()) || 0;
+        var vatAmount = 0;
+        if (vatRate > 0) {
+            vatAmount = totalAfterDiscount * (vatRate / 100);
+        }
+        $('#inv-vat-amount').text(vatAmount.toFixed(2) + ' บาท');
+
+        var grandtotal = totalAfterDiscount + vatAmount;
+        $('#inv-grandtotal').text(grandtotal.toFixed(2) + ' บาท');
+    }
+
+    // Calculate Due Date from Credit Term or vice-versa
+    $('#inv-date, #inv-credit-term').on('change input', function() {
+        var invDateStr = $('#inv-date').val();
+        var creditTerm = parseInt($('#inv-credit-term').val());
+
+        if (invDateStr && !isNaN(creditTerm) && creditTerm >= 0) {
+            var invDate = new Date(invDateStr);
+            invDate.setDate(invDate.getDate() + creditTerm);
+            $('#inv-due-date').val(invDate.toISOString().split('T')[0]);
+        }
+    });
+
+    $('#inv-due-date').on('change', function() {
+         var invDateStr = $('#inv-date').val();
+         var dueDateStr = $(this).val();
+         if (invDateStr && dueDateStr) {
+            var invDate = new Date(invDateStr);
+            var dueDate = new Date(dueDateStr);
+            var timeDiff = dueDate.getTime() - invDate.getTime();
+            var dayDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+            $('#inv-credit-term').val(dayDiff >= 0 ? dayDiff : '');
+         }
+    });
+
+
+});
+</script>
+
+</body>
+</html>

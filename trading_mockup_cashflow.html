@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading System Mockup - Cash Flow</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link to your external CSS -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- อาจจะเพิ่ม Chart.js หรือ library กราฟอื่นๆ ถ้าต้องการแสดงกราฟจริง -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+</head>
+<body>
+    <div class="sidebar">
+        <!-- Content from nav.html will be loaded here -->
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1 id="page-title">Cash Flow Management</h1>
+            <div class="user-info">
+                User: Finance01 | <a href="#">Logout</a>
+            </div>
+        </div>
+
+        <!-- Cash Flow Overview Page -->
+        <div id="cashflow-overview-page" class="page-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>ภาพรวมกระแสเงินสด</h2>
+                <button class="btn btn-primary" id="btn-show-add-cashflow-entry">+ บันทึกรายการเงินสด</button>
+            </div>
+
+            <div class="filter-bar">
+                <select id="filter-cashflow-period">
+                    <option value="this_month">เดือนนี้</option>
+                    <option value="last_month">เดือนที่แล้ว</option>
+                    <option value="this_quarter">ไตรมาสนี้</option>
+                    <option value="this_year">ปีนี้</option>
+                    <option value="custom_range">กำหนดเอง</option>
+                </select>
+                <span id="custom-date-range-cf" class="hidden" style="display:inline-flex; gap:10px;">
+                    <input type="date" id="filter-cf-date-from" title="จากวันที่">
+                    <input type="date" id="filter-cf-date-to" title="ถึงวันที่">
+                </span>
+                <select id="filter-cashflow-io">
+                    <option value="">ทุกโครงการ (IO)</option>
+                    <option value="IO-2023-055">IO-2023-055 (บ. ABC)</option>
+                    <option value="IO-2023-056">IO-2023-056 (บ. XYZ)</option>
+                </select>
+                <button class="btn btn-secondary" id="btn-filter-cashflow">แสดงผล</button>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="form-row" style="margin-bottom: 25px;">
+                <div class="form-group col-third">
+                    <div style="background-color: #e8f8f5; border-left: 5px solid #1abc9c; padding: 15px; border-radius: 5px;">
+                        <h4 style="margin:0 0 5px 0; color: #16a085;">เงินสดรับ (Cash In)</h4>
+                        <p id="summary-cash-in" style="font-size: 1.8em; font-weight: bold; margin:0; color: #16a085;">฿1,250,000.00</p>
+                    </div>
+                </div>
+                <div class="form-group col-third">
+                     <div style="background-color: #fdedec; border-left: 5px solid #e74c3c; padding: 15px; border-radius: 5px;">
+                        <h4 style="margin:0 0 5px 0; color: #c0392b;">เงินสดจ่าย (Cash Out)</h4>
+                        <p id="summary-cash-out" style="font-size: 1.8em; font-weight: bold; margin:0; color: #c0392b;">฿875,000.00</p>
+                    </div>
+                </div>
+                <div class="form-group col-third">
+                    <div style="background-color: #ebf5fb; border-left: 5px solid #3498db; padding: 15px; border-radius: 5px;">
+                        <h4 style="margin:0 0 5px 0; color: #2980b9;">Net Cash Flow</h4>
+                        <p id="summary-net-cashflow" style="font-size: 1.8em; font-weight: bold; margin:0; color: #2980b9;">฿375,000.00</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart Placeholder (In a real app, use Chart.js or similar) -->
+            <div class="form-section">
+                <h3>กราฟกระแสเงินสดรายวัน/รายสัปดาห์</h3>
+                <div id="cashflow-chart-container" style="width:100%; height:300px; background-color:#f9f9f9; border:1px solid #eee; display:flex; align-items:center; justify-content:center;">
+                    <p>(Placeholder for Cash Flow Chart)</p>
+                    <!-- <canvas id="cashflowChart"></canvas> -->
+                </div>
+            </div>
+
+
+            <h3>รายการเคลื่อนไหวเงินสดล่าสุด</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>วันที่</th>
+                        <th>ประเภท</th>
+                        <th>คำอธิบาย</th>
+                        <th>IO (ถ้ามี)</th>
+                        <th>จำนวนเงิน (บาท)</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="cashflow-table-body">
+                    <!-- Sample Data -->
+                    <tr>
+                        <td>2023-11-10</td>
+                        <td style="color:green;">IN (รับจากลูกค้า)</td>
+                        <td>รับชำระ INV2023-00780 จาก บ. XYZ Trading</td>
+                        <td>IO-2023-050</td>
+                        <td style="text-align:right; color:green;">+85,500.00</td>
+                        <td class="action-buttons"><a href="#" class="btn btn-secondary btn-sm btn-edit-cashflow">แก้</a></td>
+                    </tr>
+                    <tr>
+                        <td>2023-11-08</td>
+                        <td style="color:red;">OUT (จ่าย Supplier)</td>
+                        <td>จ่าย SUP-PO-080 ให้ Supplier Best Co.</td>
+                        <td>IO-2023-055</td>
+                        <td style="text-align:right; color:red;">-60,000.00</td>
+                         <td class="action-buttons"><a href="#" class="btn btn-secondary btn-sm btn-edit-cashflow">แก้</a></td>
+                    </tr>
+                    <tr>
+                        <td>2023-11-05</td>
+                        <td style="color:red;">OUT (ค่าดำเนินการ)</td>
+                        <td>ค่าขนส่งสินค้า IO-2023-055</td>
+                        <td>IO-2023-055</td>
+                        <td style="text-align:right; color:red;">-5,000.00</td>
+                         <td class="action-buttons"><a href="#" class="btn btn-secondary btn-sm btn-edit-cashflow">แก้</a></td>
+                    </tr>
+                </tbody>
+            </table>
+             <div style="text-align: center; margin-top: 20px;">
+                [Pagination: << < 1 2 3 > >> ]
+            </div>
+        </div>
+
+        <!-- Add/Edit Cash Flow Entry Form Page (Initially Hidden) -->
+        <div id="add-edit-cashflow-entry-page" class="page-content hidden">
+            <h2 id="cashflow-entry-form-title">บันทึกรายการเงินสดใหม่</h2>
+            <form id="cashflow-entry-form">
+                <input type="hidden" id="cashflow-entry-id" name="cashflow-entry-id">
+
+                <div class="form-section">
+                    <h3>รายละเอียดรายการ</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cf-entry-date">วันที่ทำรายการ<span class="required-star">*</span></label>
+                            <input type="date" id="cf-entry-date" name="cf-entry-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cf-entry-type">ประเภทรายการ<span class="required-star">*</span></label>
+                            <select id="cf-entry-type" name="cf-entry-type" required>
+                                <option value="">-- เลือกประเภท --</option>
+                                <option value="IN">เงินสดรับ (Cash In)</option>
+                                <option value="OUT">เงินสดจ่าย (Cash Out)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cf-entry-description">คำอธิบายรายการ<span class="required-star">*</span></label>
+                        <input type="text" id="cf-entry-description" name="cf-entry-description" required placeholder="เช่น รับชำระจากลูกค้า ABC, จ่ายค่าเช่าออฟฟิศ">
+                    </div>
+                     <div class="form-row">
+                        <div class="form-group">
+                            <label for="cf-entry-amount">จำนวนเงิน (บาท)<span class="required-star">*</span></label>
+                            <input type="number" id="cf-entry-amount" name="cf-entry-amount" min="0" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cf-entry-category">หมวดหมู่ (ไม่บังคับ)</label>
+                            <select id="cf-entry-category" name="cf-entry-category">
+                                <option value="">-- เลือกหมวดหมู่ --</option>
+                                <option value="sales_receipt">รับจากยอดขาย</option>
+                                <option value="supplier_payment">จ่าย Supplier</option>
+                                <option value="operating_expense">ค่าใช้จ่ายดำเนินการ</option>
+                                <option value="salary">เงินเดือน</option>
+                                <option value="rent">ค่าเช่า</option>
+                                <option value="other_income">รายรับอื่นๆ</option>
+                                <option value="other_expense">รายจ่ายอื่นๆ</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cf-entry-io-ref">อ้างอิงโครงการ (Internal Order - IO) (ถ้ามี)</label>
+                        <input type="text" id="cf-entry-io-ref" name="cf-entry-io-ref" placeholder="เช่น IO-2023-055">
+                        <!-- Could be a select/lookup for open IOs -->
+                    </div>
+                    <div class="form-group">
+                        <label for="cf-entry-notes">หมายเหตุเพิ่มเติม</label>
+                        <textarea id="cf-entry-notes" name="cf-entry-notes" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div style="text-align: right; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-cashflow-entry">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary">บันทึกรายการ</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Placeholder for other pages -->
+        <div id="dashboard-page" class="page-content hidden"><h2>Dashboard Content</h2></div>
+        <!-- ... more placeholder divs ... -->
+
+    </div>
+
+<script>
+$(document).ready(function() {
+    // Load sidebar
+    $('.sidebar').load('nav.html')
+
+    function initializePageContent(pageTarget) {
+        $('#page-title').text($('#nav-' + pageTarget).text() || 'Cash Flow Management'); // Fallback title
+        $('.page-content').addClass('hidden'); // Hide all main content sections
+        $('#' + pageTarget + '-page').removeClass('hidden'); // Show the target page section
+
+        if (pageTarget === 'cashflow') {
+            $('#cashflow-overview-page').removeClass('hidden'); // Ensure overview is shown by default for cashflow
+            // You might want to load initial cashflow data/summary here
+            loadCashflowSummary(); // Example function call
+        }
+    }
+
+
+    // --- Cash Flow Overview Page Actions ---
+    $('#btn-show-add-cashflow-entry').on('click', function() {
+        $('.page-content').addClass('hidden');
+        $('#add-edit-cashflow-entry-page').removeClass('hidden');
+        $('#cashflow-entry-form-title').text('บันทึกรายการเงินสดใหม่');
+        $('#cashflow-entry-form')[0].reset();
+        $('#cashflow-entry-id').val('');
+        var today = new Date().toISOString().split('T')[0];
+        $('#cf-entry-date').val(today); // Default to today
+    });
+
+    $('#cashflow-table-body').on('click', '.btn-edit-cashflow', function(e) {
+        e.preventDefault();
+        var entryDesc = $(this).closest('tr').find('td:nth-child(3)').text();
+        alert('กำลังแก้ไขรายการ: ' + entryDesc + ' (ฟังก์ชันนี้ต้องดึงข้อมูลจริง)');
+
+        $('.page-content').addClass('hidden');
+        $('#add-edit-cashflow-entry-page').removeClass('hidden');
+        $('#cashflow-entry-form-title').text('แก้ไขรายการเงินสด');
+        // Simulate loading data
+        $('#cashflow-entry-id').val('CF-ENTRY-001'); // Example ID
+        $('#cf-entry-date').val('2023-11-10');
+        $('#cf-entry-type').val('IN');
+        $('#cf-entry-description').val('รับชำระ INV2023-00780 จาก บ. XYZ Trading');
+        $('#cf-entry-amount').val(85500);
+        $('#cf-entry-category').val('sales_receipt');
+        $('#cf-entry-io-ref').val('IO-2023-050');
+        $('#cf-entry-notes').val('โอนเข้าบัญชี KBank');
+    });
+
+    $('#filter-cashflow-period').on('change', function(){
+        if($(this).val() === 'custom_range'){
+            $('#custom-date-range-cf').removeClass('hidden');
+        } else {
+            $('#custom-date-range-cf').addClass('hidden');
+        }
+    }).trigger('change');
+
+    $('#btn-filter-cashflow').on('click', function(){
+        alert('กำลังกรองข้อมูล Cash Flow... (จำลอง)');
+        loadCashflowSummary(); // Reload summary based on new filters
+        // In a real app, fetch and update table and chart too
+    });
+
+    function loadCashflowSummary() {
+        // Simulate fetching data and updating summary cards
+        // These values would come from backend based on filters
+        $('#summary-cash-in').text('฿' + (Math.random() * 2000000).toFixed(2));
+        $('#summary-cash-out').text('฿' + (Math.random() * 1500000).toFixed(2));
+        var net = parseFloat($('#summary-cash-in').text().replace(/[฿,]/g, '')) - parseFloat($('#summary-cash-out').text().replace(/[฿,]/g, ''));
+        $('#summary-net-cashflow').text('฿' + net.toFixed(2));
+        if(net < 0){
+            $('#summary-net-cashflow').css('color', '#c0392b');
+        } else {
+            $('#summary-net-cashflow').css('color', '#2980b9');
+        }
+        // Here you would also update the chart if using one
+    }
+
+
+    // --- Add/Edit Cash Flow Entry Form Page ---
+    $('#btn-cancel-cashflow-entry').on('click', function() {
+        $('.page-content').addClass('hidden');
+        $('#cashflow-overview-page').removeClass('hidden');
+        initializePageContent('cashflow'); // Re-initialize to set title and active nav
+    });
+
+    $('#cashflow-entry-form').on('submit', function(e) {
+        e.preventDefault();
+        var entryId = $('#cashflow-entry-id').val();
+        var action = entryId ? 'แก้ไข' : 'เพิ่ม';
+
+        var formData = $(this).serializeArray();
+        console.log(`Cash Flow Entry Data (${action}):`, formData);
+        // In a real app, send data to server, then update cash flow overview
+
+        alert(`รายการเงินสด ${action}แล้ว! (ดู Console log)`);
+
+        $('.page-content').addClass('hidden');
+        $('#cashflow-overview-page').removeClass('hidden');
+        initializePageContent('cashflow'); // Re-initialize
+        loadCashflowSummary(); // Refresh summary
+    });
+
+    // Initial load of summary (if page shown by default without nav click)
+    if ($('#cashflow-overview-page').is(':visible')) {
+        loadCashflowSummary();
+    }
+
+});
+</script>
+
+</body>
+</html>

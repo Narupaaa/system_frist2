@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading System Mockup - Quotations</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        body {
+            font-family: 'Tahoma', 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            background-color: #f0f2f5;
+            color: #333;
+            display: flex;
+            min-height: 100vh;
+        }
+
+       
+        .main-content {
+            flex-grow: 1;
+            padding: 20px 30px;
+            overflow-y: auto;
+            /* For scrollable content if it overflows */
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #bdc3c7;
+            /* Light Gray */
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            color: #1a5ca3;
+            /* Dark Blue */
+            margin: 0;
+        }
+
+        .header .user-info {
+            font-size: 0.9em;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            /* Blue */
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            /* Darker Blue */
+        }
+
+        .btn-secondary {
+            background-color: #ecf0f1;
+            /* Light Gray */
+            color: #34495e;
+            /* Dark Blue-Gray */
+            border: 1px solid #bdc3c7;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d5dbdb;
+        }
+
+        .btn-danger {
+            background-color: #e74c3c;
+            /* Red */
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+            /* Darker Red */
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        th,
+        td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: 600;
+            color: #555;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .action-buttons a,
+        .action-buttons button {
+            margin-right: 5px;
+            text-decoration: none;
+            padding: 5px 8px;
+        }
+
+        /* Form Styles */
+        .form-section {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-section h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            font-size: 1.2em;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="date"],
+        .form-group input[type="number"],
+        .form-group select,
+        .form-group textarea {
+            width: calc(100% - 22px);
+            /* Adjust for padding and border */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .item-table th,
+        .item-table td {
+            font-size: 0.9em;
+        }
+
+        .item-table input[type="text"],
+        .item-table input[type="number"] {
+            width: calc(100% - 16px);
+            /* Smaller padding */
+            padding: 6px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .filter-bar input,
+        .filter-bar select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <h2>Trading System</h2>
+        <ul>
+            <li><a href="#" id="nav-dashboard">Dashboard</a></li>
+            <li><a href="trading_mockup_customers.html" id="nav-customers">ลูกค้า</a></li>
+            <li><a href="https://www.w3schools.com" id="nav-products">สินค้า</a></li>
+            <li><a href="mockup_trding_quotations.html" id="nav-quotations" class="active">ใบเสนอราคา</a></li>
+            <li><a href="#" id="nav-customer-pos">คำสั่งซื้อลูกค้า</a></li>
+            <li><a href="#" id="nav-supplier-pos">คำสั่งซื้อ Supplier</a></li>
+            <li><a href="#" id="nav-inventory">สต็อก</a></li>
+            <li><a href="#" id="nav-deliveries">การจัดส่ง</a></li>
+            <li><a href="#" id="nav-invoices">ใบแจ้งหนี้</a></li>
+            <li><a href="#" id="nav-cashflow">Cash Flow</a></li>
+            <li><a href="#" id="nav-reports">รายงาน</a></li>
+            <li><a href="#" id="nav-settings">ตั้งค่า</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1 id="page-title">ใบเสนอราคา (Quotations)</h1>
+            <div class="user-info">
+                User: Sales01 | <a href="#">Logout</a>
+            </div>
+        </div>
+
+        <!-- Quotation List Page -->
+        <div id="quotation-list-page">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>รายการใบเสนอราคา</h2>
+                <button class="btn btn-primary" id="btn-show-create-qtn"> + สร้าง QTN ใหม่</button>
+            </div>
+
+            <div class="filter-bar">
+                <input type="text" placeholder="ค้นหาเลขที่ QTN, ชื่อลูกค้า...">
+                <select>
+                    <option value="">สถานะทั้งหมด</option>
+                    <option value="reviewing">Reviewing</option>
+                    <option value="waiting">Waiting</option>
+                    <option value="accepted">Accepted PR</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+                <input type="date" title="จากวันที่">
+                <input type="date" title="ถึงวันที่">
+                <button class="btn btn-secondary">ค้นหา</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>เลขที่ QTN</th>
+                        <th>ลูกค้า</th>
+                        <th>วันที่สร้าง</th>
+                        <th>มูลค่า (บาท)</th>
+                        <th>สถานะ</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="quotation-table-body">
+                    <!-- Sample Data (จะถูกเพิ่มโดย jQuery หรือดึงจาก API จริง) -->
+                    <tr>
+                        <td>QTN00123</td>
+                        <td>บ. ABC จำกัด</td>
+                        <td>2023-10-26</td>
+                        <td>150,000</td>
+                        <td>Waiting</td>
+                        <td class="action-buttons">
+                            <a href="#" class="btn btn-secondary btn-sm btn-view-qtn">ดู</a>
+                            <a href="#" class="btn btn-secondary btn-sm btn-edit-qtn">แก้</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>QTN00122</td>
+                        <td>บ. XYZ Trading</td>
+                        <td>2023-10-25</td>
+                        <td>85,000</td>
+                        <td>Accepted PR</td>
+                        <td class="action-buttons">
+                            <a href="#" class="btn btn-secondary btn-sm btn-view-qtn">ดู</a>
+                            <a href="#" class="btn btn-secondary btn-sm btn-edit-qtn">แก้</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="text-align: center; margin-top: 20px;">
+                [Pagination: << < 1 2 3> >> ]
+            </div>
+        </div>
+
+        <!-- Create/Edit Quotation Page (Initially Hidden) -->
+        <div id="create-edit-quotation-page" class="hidden">
+            <h2 id="qtn-form-title">สร้างใบเสนอราคาใหม่</h2>
+            <form id="quotation-form">
+                <div class="form-section">
+                    <h3>ข้อมูลลูกค้า</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="qtn-customer">ลูกค้า</label>
+                            <select id="qtn-customer" name="qtn-customer" required>
+                                <option value="">-- เลือกลูกค้า --</option>
+                                <option value="cust001">บ. ABC จำกัด</option>
+                                <option value="cust002">บ. XYZ Trading</option>
+                                <option value="cust003">หจก. DEF Supply</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="qtn-contact-person">ผู้ติดต่อ</label>
+                            <input type="text" id="qtn-contact-person" name="qtn-contact-person"
+                                placeholder="ชื่อผู้ติดต่อ (แสดงอัตโนมัติ)">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>ที่อยู่</label>
+                        <p id="qtn-customer-address"
+                            style="padding: 5px; border: 1px solid #eee; min-height: 20px; background-color: #f9f9f9;">
+                            (แสดงที่อยู่ลูกค้าอัตโนมัติ)
+                        </p>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>ข้อมูล QTN</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="qtn-create-date">วันที่สร้าง</label>
+                            <input type="date" id="qtn-create-date" name="qtn-create-date" value="2023-10-27" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="qtn-valid-until">Valid Until</label>
+                            <input type="date" id="qtn-valid-until" name="qtn-valid-until" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="qtn-status">สถานะ QTN</label>
+                            <select id="qtn-status" name="qtn-status">
+                                <option value="reviewing">Reviewing</option>
+                                <option value="waiting">Waiting</option>
+                                <option value="accepted_pr">Customer Accepted PR</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="qtn-chance">โอกาสปิดการขาย (%)</label>
+                            <input type="number" id="qtn-chance" name="qtn-chance" min="0" max="100"
+                                placeholder="เช่น 75">
+                        </div>
+                        <div class="form-group">
+                            <label for="qtn-expected-close">เดือนคาดว่าจะปิด</label>
+                            <input type="month" id="qtn-expected-close" name="qtn-expected-close">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>รายการสินค้า</h3>
+                    <table class="item-table" id="qtn-item-table">
+                        <thead>
+                            <tr>
+                                <th style="width:35%">สินค้า (รหัส/ชื่อ)</th>
+                                <th style="width:10%">จำนวน</th>
+                                <th style="width:15%">ราคา/หน่วย</th>
+                                <th style="width:10%">ส่วนลด(%)</th>
+                                <th style="width:15%">รวม</th>
+                                <th style="width:15%">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Item rows will be added here by jQuery -->
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-secondary" id="btn-add-qtn-item" style="margin-top:10px;">+
+                        เพิ่มรายการสินค้า</button>
+                </div>
+
+                <div class="form-section">
+                    <h3>สรุปราคา</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>ราคารวมก่อนภาษี:</label>
+                            <p id="qtn-subtotal">0.00 บาท</p>
+                        </div>
+                        <div class="form-group">
+                            <label>ภาษีมูลค่าเพิ่ม (VAT 7%):</label>
+                            <p id="qtn-vat">0.00 บาท</p>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-weight:bold;">ราคารวมสุทธิ:</label>
+                            <p id="qtn-grandtotal" style="font-weight:bold; font-size: 1.2em;">0.00 บาท</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>หมายเหตุ</h3>
+                    <div class="form-group">
+                        <textarea id="qtn-notes" name="qtn-notes" rows="3"
+                            placeholder="หมายเหตุเพิ่มเติมสำหรับใบเสนอราคานี้"></textarea>
+                    </div>
+                </div>
+
+                <div style="text-align: right; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-qtn">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary">บันทึก QTN</button>
+                    <!-- <button type="button" class="btn btn-primary">บันทึกและส่ง Email</button> -->
+                    <!-- <button type="button" class="btn btn-secondary">พิมพ์ QTN</button> -->
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('.sidebar').load('nav.html');
+
+            // --- Navigation ---
+            // $('.sidebar ul li a').on('click', function (e) {
+            //     e.preventDefault();
+            //     $('.sidebar ul li a').removeClass('active');
+            //     $(this).addClass('active');
+            //     var pageId = $(this).attr('id').replace('nav-', '');
+            //     // Simulate page change (in a real app, you'd load content or navigate)
+            //     $('#page-title').text($(this).text());
+
+            //     // Hide all main content pages first
+            //     $('#quotation-list-page').addClass('hidden');
+            //     $('#create-edit-quotation-page').addClass('hidden');
+                // Add other page IDs here if you create more
+
+                // Show the selected page
+                // if (pageId === 'quotations') {
+                //     $('#quotation-list-page').removeClass('hidden');
+                // } else if (pageId === 'dashboard') {
+                //     // Placeholder for dashboard content
+                //     $('#page-title').text('Dashboard');
+                //     alert('Dashboard page (placeholder)');
+                // }
+                // Add more else if for other pages
+            // });
+
+            // --- Quotation List Page ---
+            $('#btn-show-create-qtn').on('click', function () {
+                $('#quotation-list-page').addClass('hidden');
+                $('#create-edit-quotation-page').removeClass('hidden');
+                $('#qtn-form-title').text('สร้างใบเสนอราคาใหม่');
+                $('#quotation-form')[0].reset(); // Reset form
+                $('#qtn-item-table tbody').empty(); // Clear items
+                addQuotationItemRow(); // Add one initial item row
+                updateTotals();
+            });
+
+            // Delegate event for edit buttons (if added dynamically)
+            $('#quotation-table-body').on('click', '.btn-edit-qtn', function (e) {
+                e.preventDefault();
+                // In a real app, you'd fetch data for this QTN and populate the form
+                var qtnId = $(this).closest('tr').find('td:first-child').text();
+                alert('กำลังแก้ไข QTN: ' + qtnId + ' (ฟังก์ชันนี้ต้องดึงข้อมูลจริงมาใส่ฟอร์ม)');
+
+                $('#quotation-list-page').addClass('hidden');
+                $('#create-edit-quotation-page').removeClass('hidden');
+                $('#qtn-form-title').text('แก้ไขใบเสนอราคา #' + qtnId);
+                // --- Simulate loading data ---
+                $('#qtn-customer').val('cust001');
+                $('#qtn-create-date').val('2023-10-26');
+                $('#qtn-valid-until').val('2023-11-26');
+                $('#qtn-status').val('waiting');
+                $('#qtn-chance').val(75);
+                // Clear and add dummy items for edit
+                $('#qtn-item-table tbody').empty();
+                addQuotationItemRow('PROD001', 2, 5000, 5);
+                addQuotationItemRow('PROD005', 1, 12000, 0);
+                updateTotals();
+            });
+
+            $('#quotation-table-body').on('click', '.btn-view-qtn', function (e) {
+                e.preventDefault();
+                var qtnId = $(this).closest('tr').find('td:first-child').text();
+                alert('กำลังดู QTN: ' + qtnId + ' (แสดงรายละเอียด QTN แบบ Read-only)');
+                // Here you would typically show a modal or a read-only version of the form
+            });
+
+
+            // --- Create/Edit Quotation Page ---
+            $('#btn-cancel-qtn').on('click', function () {
+                $('#create-edit-quotation-page').addClass('hidden');
+                $('#quotation-list-page').removeClass('hidden');
+                $('#page-title').text('ใบเสนอราคา (Quotations)');
+            });
+
+            $('#quotation-form').on('submit', function (e) {
+                e.preventDefault();
+                // In a real app, you'd serialize form data and send it to the server
+                var formData = $(this).serializeArray();
+                console.log('Form Data:', formData);
+                var items = [];
+                $('#qtn-item-table tbody tr').each(function () {
+                    var item = {
+                        product: $(this).find('.qtn-item-product').val(),
+                        quantity: $(this).find('.qtn-item-qty').val(),
+                        unit_price: $(this).find('.qtn-item-price').val(),
+                        discount: $(this).find('.qtn-item-discount').val()
+                    };
+                    items.push(item);
+                });
+                console.log('Items:', items);
+                alert('QTN บันทึกแล้ว! (ดู Console log สำหรับข้อมูล)');
+                // After successful save:
+                $('#create-edit-quotation-page').addClass('hidden');
+                $('#quotation-list-page').removeClass('hidden');
+                $('#page-title').text('ใบเสนอราคา (Quotations)');
+                // Potentially add new row to QTN list table or refresh list
+            });
+
+            // Add item row to quotation
+            $('#btn-add-qtn-item').on('click', function () {
+                addQuotationItemRow();
+            });
+
+            function addQuotationItemRow(product = '', qty = 1, price = 0, discount = 0) {
+                var rowCount = $('#qtn-item-table tbody tr').length;
+                var newRow = `
+            <tr>
+                <td><input type="text" class="qtn-item-product" name="items[${rowCount}][product]" placeholder="รหัส/ชื่อสินค้า" value="${product}"></td>
+                <td><input type="number" class="qtn-item-qty" name="items[${rowCount}][quantity]" value="${qty}" min="1"></td>
+                <td><input type="number" class="qtn-item-price" name="items[${rowCount}][unit_price]" value="${price}" min="0" step="any"></td>
+                <td><input type="number" class="qtn-item-discount" name="items[${rowCount}][discount]" value="${discount}" min="0" max="100"></td>
+                <td class="qtn-item-total">0.00</td>
+                <td><button type="button" class="btn btn-danger btn-sm btn-remove-qtn-item">ลบ</button></td>
+            </tr>
+        `;
+                $('#qtn-item-table tbody').append(newRow);
+                updateTotals(); // Update totals when a new row is added
+            }
+
+            // Remove item row from quotation
+            $('#qtn-item-table').on('click', '.btn-remove-qtn-item', function () {
+                $(this).closest('tr').remove();
+                updateTotals();
+            });
+
+            // Update totals when quantity, price, or discount changes
+            $('#qtn-item-table').on('input', '.qtn-item-qty, .qtn-item-price, .qtn-item-discount', function () {
+                var row = $(this).closest('tr');
+                var qty = parseFloat(row.find('.qtn-item-qty').val()) || 0;
+                var price = parseFloat(row.find('.qtn-item-price').val()) || 0;
+                var discountPercent = parseFloat(row.find('.qtn-item-discount').val()) || 0;
+
+                var itemTotal = qty * price;
+                if (discountPercent > 0 && discountPercent <= 100) {
+                    itemTotal = itemTotal - (itemTotal * (discountPercent / 100));
+                }
+                row.find('.qtn-item-total').text(itemTotal.toFixed(2));
+                updateTotals();
+            });
+
+            function updateTotals() {
+                var subtotal = 0;
+                $('#qtn-item-table tbody tr').each(function () {
+                    subtotal += parseFloat($(this).find('.qtn-item-total').text()) || 0;
+                });
+
+                var vatRate = 0.07; // 7%
+                var vat = subtotal * vatRate;
+                var grandtotal = subtotal + vat;
+
+                $('#qtn-subtotal').text(subtotal.toFixed(2) + ' บาท');
+                $('#qtn-vat').text(vat.toFixed(2) + ' บาท');
+                $('#qtn-grandtotal').text(grandtotal.toFixed(2) + ' บาท');
+            }
+
+            // Simulate customer address update on selection
+            $('#qtn-customer').on('change', function () {
+                var selectedCustomer = $(this).val();
+                if (selectedCustomer === 'cust001') {
+                    $('#qtn-customer-address').text('123 ถ.สุขุมวิท แขวงคลองเตย เขตคลองเตย กรุงเทพฯ 10110');
+                    $('#qtn-contact-person').val('คุณสมชาย ใจดี');
+                } else if (selectedCustomer === 'cust002') {
+                    $('#qtn-customer-address').text('456 ถ.รัชดาภิเษก แขวงดินแดง เขตดินแดง กรุงเทพฯ 10400');
+                    $('#qtn-contact-person').val('คุณสมหญิง มีสุข');
+                } else {
+                    $('#qtn-customer-address').text('(เลือกบริษัทเพื่อแสดงที่อยู่)');
+                    $('#qtn-contact-person').val('');
+                }
+            });
+
+            // Initialize with one item row if creating new
+            if ($('#create-edit-quotation-page').not('.hidden').length > 0 && $('#qtn-item-table tbody tr').length === 0) {
+                // This check might be tricky with initial setup, ensure it runs when form is visible for new QTN
+            }
+            // Add one item row by default when form is shown for new QTN
+            if ($('#qtn-form-title').text() === 'สร้างใบเสนอราคาใหม่' && $('#qtn-item-table tbody tr').length === 0) {
+                addQuotationItemRow();
+            }
+
+
+        });
+    </script>
+
+</body>
+
+</html>

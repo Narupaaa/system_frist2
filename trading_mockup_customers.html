@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading System Mockup - Customers</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        /* CSS Styles (เหมือนเดิมจากตัวอย่างก่อนหน้า - สามารถ copy มาวางได้เลย) */
+        body {
+            font-family: 'Tahoma', 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            background-color: #f0f2f5;
+            color: #333;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 20px 30px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #bdc3c7;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            color: #1a5ca3;
+            margin: 0;
+        }
+
+        .header .user-info {
+            font-size: 0.9em;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-secondary {
+            background-color: #ecf0f1;
+            color: #34495e;
+            border: 1px solid #bdc3c7;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d5dbdb;
+        }
+
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        th,
+        td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: 600;
+            color: #555;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .action-buttons a,
+        .action-buttons button {
+            margin-right: 5px;
+            text-decoration: none;
+            padding: 5px 8px;
+        }
+
+        .form-section {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-section h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            font-size: 1.2em;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
+        .form-group input[type="number"],
+        .form-group select,
+        .form-group textarea {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .filter-bar input,
+        .filter-bar select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #contacts-section table th,
+        #contacts-section table td {
+            font-size: 0.9em;
+        }
+
+        #contacts-section table input {
+            width: calc(100% - 16px);
+            /* Smaller padding */
+            padding: 6px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+
+    </div>
+    <div class="main-content">
+
+        <!-- Customer List Page -->
+        <div id="customer-list-page">
+
+            <div class="header">
+                <h1 id="page-title">ลูกค้า (Customer)</h1>
+                <div class="user-info">
+                    User: Sales01 | <a href="#">Logout</a>
+                </div>
+            </div>
+
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>รายชื่อลูกค้า</h2>
+                <button class="btn btn-primary" id="btn-show-create-customer"> + เพิ่มลูกค้าใหม่</button>
+            </div>
+
+            <div class="filter-bar">
+                <input type="text" placeholder="ค้นหาชื่อบริษัท, ผู้ติดต่อ...">
+                <select>
+                    <option value="">ประเภทลูกค้าทั้งหมด</option>
+                    <option value="factory">โรงงาน</option>
+                    <option value="reseller">ตัวแทนจำหน่าย</option>
+                </select>
+                <button class="btn btn-secondary">ค้นหา</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>รหัสลูกค้า</th>
+                        <th>ชื่อบริษัท</th>
+                        <th>ผู้ติดต่อหลัก</th>
+                        <th>เบอร์โทร</th>
+                        <th>อีเมล</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="customer-table-body">
+                    <!-- Sample Data -->
+                    <tr>
+                        <td>CUST001</td>
+                        <td>บ. ABC จำกัด</td>
+                        <td>สมชาย ใจดี</td>
+                        <td>02-123-4567</td>
+                        <td>somchai@abc.com</td>
+                        <td class="action-buttons">
+                            <a href="#" class="btn btn-secondary btn-sm btn-view-customer">ดู</a>
+                            <a href="#" class="btn btn-secondary btn-sm btn-edit-customer">แก้</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>CUST002</td>
+                        <td>บ. XYZ Trading</td>
+                        <td>สมหญิง มีสุข</td>
+                        <td>081-987-6543</td>
+                        <td>somyimg@xyz.co.th</td>
+                        <td class="action-buttons">
+                            <a href="#" class="btn btn-secondary btn-sm btn-view-customer">ดู</a>
+                            <a href="#" class="btn btn-secondary btn-sm btn-edit-customer">แก้</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="text-align: center; margin-top: 20px;">
+                [Pagination: << < 1 2 3> >> ]
+            </div>
+        </div>
+
+        <!-- Create/Edit Customer Page (Initially Hidden) -->
+        <div id="create-edit-customer-page" class="hidden">
+            <h2 id="customer-form-title">เพิ่มลูกค้าใหม่</h2>
+            <form id="customer-form">
+                <input type="hidden" id="customer-id" name="customer-id">
+
+                <div class="form-section">
+                    <h3>ข้อมูลบริษัท</h3>
+                    <div class="form-group">
+                        <label for="customer-company-name">ชื่อบริษัท <span style="color:red;">*</span></label>
+                        <input type="text" id="customer-company-name" name="customer-company-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customer-tax-id">เลขประจำตัวผู้เสียภาษี</label>
+                        <input type="text" id="customer-tax-id" name="customer-tax-id">
+                    </div>
+                    <div class="form-group">
+                        <label for="customer-address">ที่อยู่บริษัท <span style="color:red;">*</span></label>
+                        <textarea id="customer-address" name="customer-address" rows="3" required></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="customer-phone">เบอร์โทรศัพท์บริษัท</label>
+                            <input type="tel" id="customer-phone" name="customer-phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="customer-email">อีเมลบริษัท</label>
+                            <input type="email" id="customer-email" name="customer-email">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="customer-credit-term">Credit Term (วัน)</label>
+                        <input type="number" id="customer-credit-term" name="customer-credit-term" min="0">
+                    </div>
+                </div>
+
+                <div class="form-section" id="contacts-section">
+                    <h3>ข้อมูลผู้ติดต่อ (Contacts)</h3>
+                    <table id="customer-contacts-table">
+                        <thead>
+                            <tr>
+                                <th style="width:30%">ชื่อ-นามสกุล</th>
+                                <th style="width:25%">ตำแหน่ง</th>
+                                <th style="width:20%">เบอร์โทร</th>
+                                <th style="width:20%">อีเมล</th>
+                                <th style="width:5%">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Contact rows will be added here -->
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-secondary" id="btn-add-customer-contact"
+                        style="margin-top:10px;">+
+                        เพิ่มผู้ติดต่อ</button>
+                </div>
+
+                <div class="form-section">
+                    <h3>ข้อมูลเพิ่มเติม</h3>
+                    <div class="form-group">
+                        <label for="customer-site-info">ข้อมูล Site / สถานที่ตั้งโรงงาน (ถ้ามี)</label>
+                        <textarea id="customer-site-info" name="customer-site-info" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="customer-notes">หมายเหตุ</label>
+                        <textarea id="customer-notes" name="customer-notes" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div style="text-align: right; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-customer">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary">บันทึกข้อมูลลูกค้า</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+
+            $('.sidebar').load('nav.html');
+
+            // --- Navigation (Simplified for this example) ---
+
+
+            // --- Customer List Page ---
+            $('#btn-show-create-customer').on('click', function () {
+                $('#customer-list-page').addClass('hidden');
+                $('#create-edit-customer-page').removeClass('hidden');
+                $('#customer-form-title').text('เพิ่มลูกค้าใหม่');
+                $('#customer-form')[0].reset();
+                $('#customer-id').val(''); // Clear hidden ID
+                $('#customer-contacts-table tbody').empty(); // Clear contacts
+                addCustomerContactRow(); // Add one initial contact row
+            });
+
+            $('#customer-table-body').on('click', '.btn-edit-customer', function (e) {
+                e.preventDefault();
+                var customerId = $(this).closest('tr').find('td:first-child').text();
+                alert('กำลังแก้ไขลูกค้า ID: ' + customerId + ' (ฟังก์ชันนี้ต้องดึงข้อมูลจริง)');
+
+                $('#customer-list-page').addClass('hidden');
+                $('#create-edit-customer-page').removeClass('hidden');
+                $('#customer-form-title').text('แก้ไขข้อมูลลูกค้า #' + customerId);
+                $('#customer-id').val(customerId); // Set the ID for submission
+
+                // --- Simulate loading data for CUST001 ---
+                if (customerId === 'CUST001') {
+                    $('#customer-company-name').val('บ. ABC จำกัด');
+                    $('#customer-tax-id').val('01055XXXXXXX1');
+                    $('#customer-address').val('123 ถ.สุขุมวิท แขวงคลองเตย เขตคลองเตย กรุงเทพฯ 10110');
+                    $('#customer-phone').val('02-123-4567');
+                    $('#customer-email').val('contact@abc.com');
+                    $('#customer-credit-term').val(30);
+                    $('#customer-contacts-table tbody').empty(); // Clear previous contacts
+                    addCustomerContactRow('สมชาย ใจดี', 'จัดซื้อ', '081-111-2222', 'somchai.j@abc.com');
+                    addCustomerContactRow('สุภาพร สวยงาม', 'บัญชี', '082-333-4444', 'supaporn.s@abc.com');
+                    $('#customer-site-info').val('โรงงานอยู่ที่นิคมอุตสาหกรรมบางปู');
+                    $('#customer-notes').val('ลูกค้าเก่าแก่');
+                } else {
+                    $('#customer-form')[0].reset(); // Reset if not CUST001 for this example
+                    $('#customer-contacts-table tbody').empty();
+                    addCustomerContactRow();
+                }
+            });
+
+            $('#customer-table-body').on('click', '.btn-view-customer', function (e) {
+                e.preventDefault();
+                var customerId = $(this).closest('tr').find('td:first-child').text();
+                alert('กำลังดูข้อมูลลูกค้า ID: ' + customerId + ' (แสดงรายละเอียดแบบ Read-only)');
+                // You would typically show a modal or a read-only version of the form here.
+            });
+
+
+            // --- Create/Edit Customer Page ---
+            $('#btn-cancel-customer').on('click', function () {
+                $('#create-edit-customer-page').addClass('hidden');
+                $('#customer-list-page').removeClass('hidden');
+                $('#page-title').text('ลูกค้า (Customers)');
+            });
+
+            $('#customer-form').on('submit', function (e) {
+                e.preventDefault();
+                var customerId = $('#customer-id').val();
+                var action = customerId ? 'แก้ไข' : 'เพิ่ม';
+
+                var formData = $(this).serializeArray();
+                console.log(`Customer Form Data (${action}):`, formData);
+                var contacts = [];
+                $('#customer-contacts-table tbody tr').each(function () {
+                    if ($(this).find('.contact-name').val().trim() !== '') { // Only add if name is filled
+                        var contact = {
+                            name: $(this).find('.contact-name').val(),
+                            position: $(this).find('.contact-position').val(),
+                            phone: $(this).find('.contact-phone').val(),
+                            email: $(this).find('.contact-email').val()
+                        };
+                        contacts.push(contact);
+                    }
+                });
+                console.log('Contacts:', contacts);
+                alert(`ข้อมูลลูกค้า ${action}แล้ว! (ดู Console log)`);
+
+                $('#create-edit-customer-page').addClass('hidden');
+                $('#customer-list-page').removeClass('hidden');
+                $('#page-title').text('ลูกค้า (Customers)');
+                // In a real app, refresh the customer list table here
+            });
+
+            // Add contact row
+            $('#btn-add-customer-contact').on('click', function () {
+                addCustomerContactRow();
+            });
+
+            function addCustomerContactRow(name = '', position = '', phone = '', email = '') {
+                var contactRowCount = $('#customer-contacts-table tbody tr').length;
+                var newContactRow = `
+            <tr>
+                <td><input type="text" class="contact-name" name="contacts[${contactRowCount}][name]" placeholder="ชื่อ-นามสกุล" value="${name}"></td>
+                <td><input type="text" class="contact-position" name="contacts[${contactRowCount}][position]" placeholder="ตำแหน่ง" value="${position}"></td>
+                <td><input type="tel" class="contact-phone" name="contacts[${contactRowCount}][phone]" placeholder="เบอร์โทร" value="${phone}"></td>
+                <td><input type="email" class="contact-email" name="contacts[${contactRowCount}][email]" placeholder="อีเมล" value="${email}"></td>
+                <td><button type="button" class="btn btn-danger btn-sm btn-remove-customer-contact">ลบ</button></td>
+            </tr>
+        `;
+                $('#customer-contacts-table tbody').append(newContactRow);
+            }
+
+            // Remove contact row
+            $('#customer-contacts-table').on('click', '.btn-remove-customer-contact', function () {
+                $(this).closest('tr').remove();
+            });
+
+            // Set initial active page
+            $('#nav-customers').trigger('click');
+            // Add one initial contact row when creating a new customer
+            if ($('#customer-form-title').text() === 'เพิ่มลูกค้าใหม่' && $('#customer-contacts-table tbody tr').length === 0) {
+                addCustomerContactRow();
+            }
+
+        });
+    </script>
+
+</body>
+
+</html>

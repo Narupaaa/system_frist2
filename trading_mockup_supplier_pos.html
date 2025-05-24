@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading System Mockup - Supplier POs</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link to your external CSS -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <!-- Container for the sidebar -->
+    <div class="sidebar" id="sidebar-container">
+        <!-- Sidebar content will be loaded here -->
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1 id="page-title">คำสั่งซื้อ Supplier (Supplier POs)</h1>
+            <div class="user-info">
+                User: Purchasing01 | <a href="#">Logout</a>
+            </div>
+        </div>
+
+        <!-- Supplier PO List Page -->
+        <div id="supplier-po-list-page" class="page-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>รายการคำสั่งซื้อไปยัง Supplier</h2>
+                <button class="btn btn-primary" id="btn-show-create-supplier-po"> + สร้าง Supplier PO ใหม่</button>
+            </div>
+
+            <div class="filter-bar">
+                <input type="text" placeholder="ค้นหาเลขที่ PO, ชื่อ Supplier...">
+                <select id="filter-supplier-po-status">
+                    <option value="">สถานะทั้งหมด</option>
+                    <option value="draft">ฉบับร่าง</option>
+                    <option value="sent">ส่งให้ Supplier แล้ว</option>
+                    <option value="confirmed">Supplier ยืนยัน</option>
+                    <option value="partially_received">รับของบางส่วน</option>
+                    <option value="fully_received">รับของครบแล้ว</option>
+                    <option value="cancelled">ยกเลิก</option>
+                </select>
+                <input type="date" title="จากวันที่สั่งซื้อ">
+                <input type="date" title="ถึงวันที่สั่งซื้อ">
+                <button class="btn btn-secondary">ค้นหา</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>เลขที่ Supplier PO</th>
+                        <th>Supplier</th>
+                        <th>วันที่สั่งซื้อ</th>
+                        <th>วันที่คาดว่าจะได้รับ</th>
+                        <th>อ้างอิง IO</th>
+                        <th>ยอดรวม</th>
+                        <th>สถานะ</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="supplier-po-table-body">
+                    <!-- Sample Data -->
+                    <tr>
+                        <td>SUP-PO-088</td>
+                        <td>Supplier Best Co.</td>
+                        <td>2023-10-22</td>
+                        <td>2023-11-05</td>
+                        <td>IO-2023-055</td>
+                        <td>65,000.00</td>
+                        <td>Supplier ยืนยัน</td>
+                        <td class="action-buttons">
+                            <a href="#" class="btn btn-secondary btn-sm btn-view-supplier-po">ดู</a>
+                            <a href="#" class="btn btn-secondary btn-sm btn-edit-supplier-po">แก้</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>SUP-PO-089</td>
+                        <td>Global Chem Inc.</td>
+                        <td>2023-10-25</td>
+                        <td>2023-11-10</td>
+                        <td>IO-2023-056</td>
+                        <td>120,500.00</td>
+                        <td>ส่งให้ Supplier แล้ว</td>
+                        <td class="action-buttons">
+                            <a href="#" class="btn btn-secondary btn-sm btn-view-supplier-po">ดู</a>
+                            <a href="#" class="btn btn-secondary btn-sm btn-edit-supplier-po">แก้</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="text-align: center; margin-top: 20px;">
+                [Pagination: << < 1 2 3 > >> ]
+            </div>
+        </div>
+
+        <!-- Create/Edit Supplier PO Page (Initially Hidden) -->
+        <div id="create-edit-supplier-po-page" class="page-content hidden">
+            <h2 id="supplier-po-form-title">สร้างคำสั่งซื้อ Supplier ใหม่</h2>
+            <form id="supplier-po-form">
+                <input type="hidden" id="supplier-po-id" name="supplier-po-id">
+
+                <div class="form-section">
+                    <h3>ข้อมูลทั่วไป</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="supp-po-supplier">Supplier<span class="required-star">*</span></label>
+                            <select id="supp-po-supplier" name="supp-po-supplier" required>
+                                <option value="">-- เลือก Supplier --</option>
+                                <option value="sup001">Supplier Best Co.</option>
+                                <option value="sup002">Global Chem Inc.</option>
+                                <option value="sup003">Local Source Ltd.</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="supp-po-date">วันที่สั่งซื้อ<span class="required-star">*</span></label>
+                            <input type="date" id="supp-po-date" name="supp-po-date" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                         <div class="form-group">
+                            <label for="supp-po-expected-delivery-date">วันที่คาดว่าจะได้รับของ</label>
+                            <input type="date" id="supp-po-expected-delivery-date" name="supp-po-expected-delivery-date">
+                        </div>
+                        <div class="form-group">
+                            <label for="supp-po-io-ref">อ้างอิง Internal Order (IO)</label>
+                            <input type="text" id="supp-po-io-ref" name="supp-po-io-ref" placeholder="เช่น IO-2023-055">
+                            <!-- Could be a select/lookup for open IOs -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>รายการสินค้าที่สั่งซื้อ</h3>
+                    <table class="item-table" id="supp-po-item-table">
+                        <thead>
+                            <tr>
+                                <th style="width:40%">สินค้า (รหัส/ชื่อ)<span class="required-star">*</span></th>
+                                <th style="width:15%">จำนวน<span class="required-star">*</span></th>
+                                <th style="width:15%">ราคาซื้อ/หน่วย<span class="required-star">*</span></th>
+                                <th style="width:20%">รวม</th>
+                                <th style="width:10%">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Item rows will be added here by jQuery -->
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-secondary" id="btn-add-supp-po-item" style="margin-top:10px;">+ เพิ่มรายการสินค้า</button>
+                </div>
+
+                <div class="form-section">
+                     <h3>สรุปยอดสั่งซื้อ</h3>
+                     <div class="form-row">
+                        <div class="form-group">
+                            <label>ยอดรวม (ไม่รวมภาษี):</label>
+                            <p id="supp-po-subtotal" style="font-size: 1.1em;">0.00 บาท</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="supp-po-tax-percent">ภาษี (%):</label>
+                            <input type="number" id="supp-po-tax-percent" name="supp-po-tax-percent" value="7" min="0" max="100" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label>ยอดภาษี:</label>
+                            <p id="supp-po-tax-amount" style="font-size: 1.1em;">0.00 บาท</p>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-weight:bold;">ยอดรวมสุทธิ:</label>
+                            <p id="supp-po-grandtotal" style="font-weight:bold; font-size: 1.3em; color: #27ae60;">0.00 บาท</p>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-section">
+                    <h3>เงื่อนไขและหมายเหตุ</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="supp-po-incoterm">Incoterm</label>
+                            <input type="text" id="supp-po-incoterm" name="supp-po-incoterm" placeholder="เช่น EXW, FOB, CIF">
+                        </div>
+                        <div class="form-group">
+                            <label for="supp-po-payment-term">เงื่อนไขการชำระเงิน</label>
+                            <input type="text" id="supp-po-payment-term" name="supp-po-payment-term" placeholder="เช่น Net 30 Days">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="supp-po-shipping-address">สถานที่จัดส่ง</label>
+                        <textarea id="supp-po-shipping-address" name="supp-po-shipping-address" rows="2" placeholder="ที่อยู่คลังสินค้าของบริษัท"></textarea>
+                    </div>
+                     <div class="form-group">
+                        <label for="supp-po-notes">หมายเหตุถึง Supplier</label>
+                        <textarea id="supp-po-notes" name="supp-po-notes" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>สถานะคำสั่งซื้อ</h3>
+                     <div class="form-group">
+                        <label for="supp-po-status">สถานะ PO</label>
+                        <select id="supp-po-status" name="supp-po-status">
+                            <option value="draft">ฉบับร่าง (Draft)</option>
+                            <option value="sent">ส่งให้ Supplier แล้ว</option>
+                            <option value="confirmed">Supplier ยืนยัน</option>
+                            <option value="partially_received">รับของบางส่วนแล้ว</option>
+                            <option value="fully_received">รับของครบแล้ว</option>
+                            <option value="cancelled">ยกเลิก</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <div style="text-align: right; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-supplier-po">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary">บันทึก Supplier PO</button>
+                    <!-- <button type="button" class="btn btn-primary">บันทึกและส่ง Email</button> -->
+                </div>
+            </form>
+        </div>
+
+        <!-- Placeholder for other pages -->
+        <div id="dashboard-page" class="page-content hidden"><h2>Dashboard Content</h2></div>
+        <!-- ... more placeholder divs ... -->
+
+    </div>
+
+<script>
+$(document).ready(function() {
+    // Load sidebar
+    $('.sidebar').load('nav.html')
+
+
+    // --- Supplier PO List Page ---
+    $('#btn-show-create-supplier-po').on('click', function() {
+        $('.page-content').addClass('hidden');
+        $('#create-edit-supplier-po-page').removeClass('hidden');
+        $('#supplier-po-form-title').text('สร้างคำสั่งซื้อ Supplier ใหม่');
+        $('#supplier-po-form')[0].reset();
+        $('#supplier-po-id').val('');
+        $('#supp-po-item-table tbody').empty();
+        addSupplierPoItemRow(); // Add one initial item row
+        updateSupplierPOTotals();
+        $('#supp-po-shipping-address').val('คลังสินค้าหลัก, ถนน ABC, เขต XYZ, กรุงเทพฯ 10XXX'); // Default shipping address
+    });
+
+    $('#supplier-po-table-body').on('click', '.btn-edit-supplier-po', function(e) {
+        e.preventDefault();
+        var supplierPoId = $(this).closest('tr').find('td:first-child').text();
+        alert('กำลังแก้ไข Supplier PO: ' + supplierPoId + ' (ฟังก์ชันนี้ต้องดึงข้อมูลจริง)');
+
+        $('.page-content').addClass('hidden');
+        $('#create-edit-supplier-po-page').removeClass('hidden');
+        $('#supplier-po-form-title').text('แก้ไขคำสั่งซื้อ Supplier #' + supplierPoId);
+        $('#supplier-po-id').val(supplierPoId);
+
+        // --- Simulate loading data for SUP-PO-088 ---
+        if (supplierPoId === 'SUP-PO-088') {
+            $('#supp-po-supplier').val('sup001');
+            $('#supp-po-date').val('2023-10-22');
+            $('#supp-po-expected-delivery-date').val('2023-11-05');
+            $('#supp-po-io-ref').val('IO-2023-055');
+            $('#supp-po-item-table tbody').empty(); // Clear previous items
+            addSupplierPoItemRow('PROD001', 50, 320.00); // Product ID, Qty, Price
+            addSupplierPoItemRow('PROD007', 100, 150.50);
+            $('#supp-po-tax-percent').val(7);
+            $('#supp-po-incoterm').val('CIF Bangkok Port');
+            $('#supp-po-payment-term').val('Net 30 Days after B/L Date');
+            $('#supp-po-shipping-address').val('คลังสินค้าหลัก, ถนน ABC, เขต XYZ, กรุงเทพฯ 10XXX');
+            $('#supp-po-notes').val('กรุณาแนบ COA และ MSDS มาพร้อมสินค้า');
+            $('#supp-po-status').val('confirmed');
+        } else {
+            $('#supplier-po-form')[0].reset();
+            $('#supp-po-item-table tbody').empty();
+            addSupplierPoItemRow();
+            $('#supp-po-shipping-address').val('คลังสินค้าหลัก, ถนน ABC, เขต XYZ, กรุงเทพฯ 10XXX');
+        }
+        updateSupplierPOTotals();
+    });
+
+     $('#supplier-po-table-body').on('click', '.btn-view-supplier-po', function(e) {
+        e.preventDefault();
+        var supplierPoId = $(this).closest('tr').find('td:first-child').text();
+        alert('กำลังดู Supplier PO: ' + supplierPoId + ' (แสดงรายละเอียดแบบ Read-only)');
+    });
+
+
+    // --- Create/Edit Supplier PO Page ---
+    $('#btn-cancel-supplier-po').on('click', function() {
+        $('.page-content').addClass('hidden');
+        $('#supplier-po-list-page').removeClass('hidden');
+        $('#page-title').text('คำสั่งซื้อ Supplier (Supplier POs)');
+    });
+
+    $('#supplier-po-form').on('submit', function(e) {
+        e.preventDefault();
+        var supplierPoId = $('#supplier-po-id').val();
+        var action = supplierPoId ? 'แก้ไข' : 'เพิ่ม';
+
+        var formData = $(this).serializeArray(); // For regular form data
+        console.log(`Supplier PO Form Data (${action}):`, formData);
+        var items = [];
+        $('#supp-po-item-table tbody tr').each(function() {
+            var productInput = $(this).find('.supp-po-item-product').val();
+            var qtyInput = $(this).find('.supp-po-item-qty').val();
+            var priceInput = $(this).find('.supp-po-item-price').val();
+            if(productInput && qtyInput && priceInput){ // Add only if essential fields are filled
+                 items.push({
+                    product: productInput,
+                    quantity: parseFloat(qtyInput) || 0,
+                    unit_price: parseFloat(priceInput) || 0
+                });
+            }
+        });
+        console.log('Items:', items);
+        // In a real app, combine formData and items, then send to server.
+
+        alert(`Supplier PO ${action}แล้ว! (ดู Console log)`);
+
+        $('.page-content').addClass('hidden');
+        $('#supplier-po-list-page').removeClass('hidden');
+        $('#page-title').text('คำสั่งซื้อ Supplier (Supplier POs)');
+        // In a real app, refresh the Supplier PO list table here
+    });
+
+    // Add item row to Supplier PO
+    $('#btn-add-supp-po-item').on('click', function() {
+        addSupplierPoItemRow();
+    });
+
+    function addSupplierPoItemRow(product = '', qty = 1, price = 0) {
+        var rowCount = $('#supp-po-item-table tbody tr').length;
+        // In a real app, product would be a dropdown or lookup for existing products
+        var newRow = `
+            <tr>
+                <td><input type="text" class="supp-po-item-product" name="items[${rowCount}][product]" placeholder="รหัส/ชื่อสินค้า หรือพิมพ์ใหม่" value="${product}"></td>
+                <td><input type="number" class="supp-po-item-qty" name="items[${rowCount}][quantity]" value="${qty}" min="1"></td>
+                <td><input type="number" class="supp-po-item-price" name="items[${rowCount}][unit_price]" value="${price}" min="0" step="any"></td>
+                <td class="supp-po-item-total">0.00</td>
+                <td><button type="button" class="btn btn-danger btn-sm btn-remove-supp-po-item">ลบ</button></td>
+            </tr>
+        `;
+        $('#supp-po-item-table tbody').append(newRow);
+        updateSupplierPOTotals();
+    }
+
+    // Remove item row from Supplier PO
+    $('#supp-po-item-table').on('click', '.btn-remove-supp-po-item', function() {
+        $(this).closest('tr').remove();
+        updateSupplierPOTotals();
+    });
+
+    // Update totals when quantity, price, or tax percent changes
+    $('#supp-po-item-table').on('input', '.supp-po-item-qty, .supp-po-item-price', function() {
+        var row = $(this).closest('tr');
+        var qty = parseFloat(row.find('.supp-po-item-qty').val()) || 0;
+        var price = parseFloat(row.find('.supp-po-item-price').val()) || 0;
+        var itemTotal = qty * price;
+        row.find('.supp-po-item-total').text(itemTotal.toFixed(2));
+        updateSupplierPOTotals();
+    });
+    $('#supp-po-tax-percent').on('input', updateSupplierPOTotals);
+
+
+    function updateSupplierPOTotals() {
+        var subtotal = 0;
+        $('#supp-po-item-table tbody tr').each(function() {
+            subtotal += parseFloat($(this).find('.supp-po-item-total').text()) || 0;
+        });
+
+        var taxPercent = parseFloat($('#supp-po-tax-percent').val()) || 0;
+        var taxAmount = 0;
+        if (taxPercent > 0) {
+            taxAmount = subtotal * (taxPercent / 100);
+        }
+        var grandtotal = subtotal + taxAmount;
+
+        $('#supp-po-subtotal').text(subtotal.toFixed(2) + ' บาท');
+        $('#supp-po-tax-amount').text(taxAmount.toFixed(2) + ' บาท');
+        $('#supp-po-grandtotal').text(grandtotal.toFixed(2) + ' บาท');
+    }
+
+    // Initialize
+    if ($('#create-edit-supplier-po-page').not('.hidden').length > 0 && $('#supplier-po-form-title').text() === 'สร้างคำสั่งซื้อ Supplier ใหม่' && $('#supp-po-item-table tbody tr').length === 0) {
+       addSupplierPoItemRow();
+       $('#supp-po-shipping-address').val('คลังสินค้าหลัก, ถนน ABC, เขต XYZ, กรุงเทพฯ 10XXX'); // Default shipping address
+    }
+
+
+});
+</script>
+
+</body>
+</html>
