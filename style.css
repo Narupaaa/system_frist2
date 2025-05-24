@@ -1,152 +1,371 @@
- body {
-            font-family: 'Tahoma', 'Segoe UI', sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            background-color: #f0f2f5;
-            color: #333;
-            display: flex;
-            min-height: 100vh;
-        }
+/* Your existing CSS starts here */
+body {
+    font-family: 'Tahoma', 'Segoe UI', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    background-color: #f0f2f5;
+    color: #333;
+    display: flex;
+    min-height: 100vh;
+}
 
-        .main-content {
-            flex-grow: 1;
-            padding: 20px 30px;
-            overflow-y: auto;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #bdc3c7;
-            margin-bottom: 20px;
-        }
-        .header h1 {
-            font-size: 1.8em;
-            color: #1a5ca3;
-            margin: 0;
-        }
-        .header .user-info {
-            font-size: 0.9em;
-        }
-        .btn {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: background-color 0.2s ease;
-        }
-        .btn-primary {
-            background-color: #3498db;
-            color: white;
-        }
-        .btn-primary:hover {
-            background-color: #2980b9;
-        }
-        .btn-secondary {
-            background-color: #ecf0f1;
-            color: #34495e;
-            border: 1px solid #bdc3c7;
-        }
-        .btn-secondary:hover {
-            background-color: #d5dbdb;
-        }
+.sidebar {
+    width: 250px;
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out; /* For smooth hide/show */
+    /* Ensure sidebar can scroll if content overflows vertically */
+    overflow-y: auto;
+    max-height: 100vh; /* Important for sticky sidebar effect */
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        th {
-            background-color: #f2f2f2;
-            font-weight: 600;
-            color: #555;
-        }
-        tr:hover {
-            background-color: #f9f9f9;
-        }
-        .action-buttons a, .action-buttons button {
-            margin-right: 5px;
-            text-decoration: none;
-            padding: 5px 8px;
-        }
+.sidebar h2 {
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 1.5em;
+}
 
-        .form-section {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .form-section h3 {
-            margin-top: 0;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
-            font-size: 1.2em;
-            color: #333;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
-        .form-group input[type="text"],
-        .form-group input[type="number"],
-        .form-group input[type="file"],
-        .form-group select,
-        .form-group textarea {
-            width: calc(100% - 22px);
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 0.95em;
-        }
-        .form-group textarea {
-            min-height: 80px;
-            resize: vertical;
-        }
-        .form-row {
-            display: flex;
-            gap: 20px;
-        }
-        .form-row .form-group {
-            flex: 1;
-        }
-        .form-group input[type="checkbox"] {
-            width: auto;
-            margin-right: 8px;
-            vertical-align: middle;
-        }
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li a {
+    display: block;
+    padding: 10px 15px;
+    color: #ecf0f1;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    transition: background-color 0.2s ease;
+}
+
+.sidebar ul li a:hover,
+.sidebar ul li a.active {
+    background-color: #34495e;
+    color: #ffffff;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 20px 30px;
+    overflow-y: auto; /* Allow main content to scroll independently */
+    max-height: 100vh; /* Important for sticky sidebar effect */
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #bdc3c7;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    font-size: 1.8em;
+    color: #1a5ca3;
+    margin: 0;
+}
+
+.header .user-info {
+    font-size: 0.9em;
+    text-align: right; /* Keep it right aligned if it wraps */
+}
+
+.btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+}
+
+.btn-secondary {
+    background-color: #ecf0f1;
+    color: #34495e;
+    border: 1px solid #bdc3c7;
+}
+
+.btn-secondary:hover {
+    background-color: #d5dbdb;
+}
+
+/* Table wrapper for horizontal scrolling on small screens */
+.table-responsive-wrapper {
+    overflow-x: auto;
+    margin-top: 20px; /* Keep original margin-top for table */
+    background-color: #fff; /* Move bg and shadow here if table doesn't fill wrapper */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    /* background-color and box-shadow moved to wrapper for better scroll appearance */
+}
+
+th,
+td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+    white-space: nowrap; /* Prevents text in cells from wrapping, aiding horizontal scroll */
+}
+
+th {
+    background-color: #f2f2f2;
+    font-weight: 600;
+    color: #555;
+}
+
+tr:hover {
+    background-color: #f9f9f9;
+}
+
+.action-buttons a,
+.action-buttons button {
+    margin-right: 5px;
+    text-decoration: none;
+    padding: 5px 8px;
+    display: inline-block; /* Ensure consistent spacing if they wrap */
+    margin-bottom: 5px; /* Add some space if they wrap to a new line */
+}
+
+.form-section {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.form-section h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    font-size: 1.2em;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="file"],
+.form-group select,
+.form-group textarea {
+    width: 100%; /* Make inputs take full width of their container */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.95em;
+    box-sizing: border-box; /* Important: padding and border included in width */
+}
+
+.form-group textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.form-group input[type="checkbox"] {
+    width: auto;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.hidden {
+    display: none;
+}
+
+.filter-bar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.filter-bar input,
+.filter-bar select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex-grow: 1; /* Allow filter inputs to grow */
+}
+.filter-bar input[type="submit"], /* If you have a submit button */
+.filter-bar button {
+    flex-grow: 0; /* Don't let buttons grow too much */
+}
+
+/* Hamburger menu button styling (you'll need to add this button to your HTML) */
+.menu-toggle {
+    display: none; /* Hidden by default, shown on small screens */
+    background: #1a5ca3;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 1.2em;
+    cursor: pointer;
+    border-radius: 4px;
+    position: fixed; /* Or absolute, depending on desired placement */
+    top: 15px;
+    left: 15px;
+    z-index: 1001; /* Ensure it's above other content */
+}
 
 
-        .hidden {
-            display: none;
-        }
+/* --- RESPONSIVE STYLES --- */
 
-        .filter-bar {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .filter-bar input, .filter-bar select {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
+/* Medium screens and tablets (e.g., 992px and down) */
+@media (max-width: 992px) {
+    .sidebar {
+        position: fixed; /* Fixed position for overlay effect */
+        left: 0;
+        top: 0;
+        height: 100%;
+        z-index: 1000;
+        transform: translateX(-100%); /* Initially hidden off-screen */
+        /* Add a transition for smooth sliding */
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .sidebar.active { /* Class to be added by JavaScript to show sidebar */
+        transform: translateX(0);
+    }
+
+    .main-content {
+        padding: 20px; /* Adjust padding */
+        /* If sidebar is fixed, main content doesn't need to make space for it anymore */
+    }
+    
+    .menu-toggle {
+        display: block; /* Show hamburger menu */
+    }
+}
+
+
+/* Smaller tablets and large phones (e.g., 768px and down) */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start; /* Align items to the start */
+        gap: 10px; /* Add some space between stacked items */
+    }
+
+    .header h1 {
+        font-size: 1.5em; /* Slightly smaller title */
+    }
+
+    .header .user-info {
+        font-size: 0.85em;
+        text-align: left; /* Align to left when stacked */
+        width: 100%; /* Take full width */
+    }
+
+    .main-content {
+        padding: 15px; /* Further reduce padding */
+    }
+
+    .form-row {
+        flex-direction: column; /* Stack form groups in a row vertically */
+        gap: 0; /* Remove gap, rely on form-group margin-bottom */
+    }
+    .form-row .form-group {
+        margin-bottom: 15px; /* Ensure consistent spacing */
+    }
+
+    .filter-bar {
+        flex-direction: column;
+        align-items: stretch; /* Make filter items take full width */
+    }
+
+    .filter-bar input,
+    .filter-bar select,
+    .filter-bar button {
+        width: 100%; /* Make all filter elements full width */
+        margin-bottom: 10px; /* Add space between stacked filter items */
+    }
+    .filter-bar input:last-child,
+    .filter-bar select:last-child,
+    .filter-bar button:last-child {
+        margin-bottom: 0;
+    }
+
+    .action-buttons a,
+    .action-buttons button {
+        /* On small screens, you might want action buttons to take more width */
+        /* display: block; width: 100%; margin-bottom: 5px; text-align: center; */
+        /* Or keep them inline but ensure they wrap nicely */
+    }
+
+    /* For the table, horizontal scrolling is already enabled by the wrapper.
+       You might want to reduce padding in cells for very small screens. */
+    th, td {
+        padding: 8px 10px;
+    }
+}
+
+/* Small phones (e.g., 480px and down) */
+@media (max-width: 480px) {
+    body {
+        font-size: 14px; /* Slightly smaller base font for very small screens */
+    }
+
+    .header h1 {
+        font-size: 1.3em;
+    }
+     .main-content {
+        padding: 10px;
+    }
+
+    .form-section {
+        padding: 15px;
+    }
+
+    .btn {
+        padding: 6px 12px;
+        font-size: 0.85em;
+    }
+    
+    .menu-toggle {
+        top: 10px;
+        left: 10px;
+        font-size: 1em;
+        padding: 8px 12px;
+    }
+}
