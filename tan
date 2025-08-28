@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading System Mockup - Dashboard</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link to your external CSS -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Font Awesome for icons (optional, but nice for dashboard cards) -->
+    <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
+    <!-- Chart.js (optional, if you want to implement actual charts) -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+</head>
+<body>
+        <button class="menu-toggle" aria-label="Open menu">☰</button> <!-- Hamburger icon -->
+
+    <div class="sidebar">
+        <!-- Content from nav.html will be loaded here -->
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1 id="page-title">Dashboard</h1>
+            <div class="user-info">
+                <span id="welcome-message">Welcome, User!</span> | <a href="#">Logout</a>
+            </div>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div id="dashboard-page" class="page-content">
+            <!-- Quick Stats / Summary Cards -->
+            <div class="dashboard-cards-container">
+                <div class="dashboard-card card-sales">
+                    <div class="card-icon"><i class="fas fa-chart-line fa-3x"></i></div>
+                    <div class="card-content">
+                        <h4>ยอดขายคาดการณ์ (เดือนนี้)</h4>
+                        <p class="card-value" id="db-sales-forecast">฿1,250,000</p>
+                        <small>จาก QTN ที่มีโอกาสสูง</small>
+                    </div>
+                </div>
+                <div class="dashboard-card card-qtn">
+                    <div class="card-icon"><i class="fas fa-file-alt fa-3x"></i></div>
+                    <div class="card-content">
+                        <h4>ใบเสนอราคารออนุมัติ</h4>
+                        <p class="card-value" id="db-pending-qtn">5</p>
+                        <a href="#" class="card-link" data-nav="quotations">ดูรายการ »</a>
+                    </div>
+                </div>
+                <div class="dashboard-card card-po">
+                    <div class="card-icon"><i class="fas fa-file-invoice fa-3x"></i></div>
+                    <div class="card-content">
+                        <h4>PO ลูกค้ารอสร้าง IO</h4>
+                        <p class="card-value" id="db-pending-po">3</p>
+                         <a href="#" class="card-link" data-nav="customer-pos">ดูรายการ »</a>
+                    </div>
+                </div>
+                <div class="dashboard-card card-stock">
+                    <div class="card-icon"><i class="fas fa-boxes fa-3x"></i></div>
+                    <div class="card-content">
+                        <h4>สินค้าใกล้หมดสต็อก</h4>
+                        <p class="card-value" id="db-low-stock">2</p>
+                        <a href="#" class="card-link" data-nav="inventory">ดูรายการ »</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section (Placeholders) -->
+            <div class="dashboard-section">
+                <div class="dashboard-chart-container chart-half">
+                    <h3>ภาพรวมยอดขายรายเดือน (6 เดือนล่าสุด)</h3>
+                    <div class="chart-placeholder" id="sales-monthly-chart">
+                        (กราฟแท่งแสดงยอดขายรายเดือน)
+                        <!-- <canvas id="salesMonthlyChartCanvas"></canvas> -->
+                    </div>
+                </div>
+                <div class="dashboard-chart-container chart-half">
+                    <h3>สถานะ Sales Pipeline</h3>
+                    <div class="chart-placeholder" id="pipeline-status-chart">
+                        (กราฟวงกลมแสดง % QTN ตามสถานะ)
+                        <!-- <canvas id="pipelineStatusChartCanvas"></canvas> -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity / Task List Section -->
+            <div class="dashboard-section">
+                <div class="dashboard-list-container list-half">
+                    <h3><i class="fas fa-tasks"></i> งานที่ต้องดำเนินการ (My Tasks)</h3>
+                    <ul class="task-list" id="db-my-tasks">
+                        <li><a href="#">อนุมัติ QTN00125 สำหรับ บ. DEF</a> <span class="task-due">Due: Today</span></li>
+                        <li><a href="#">ติดตามผล QTN00120 กับ บ. GHI</a> <span class="task-due">Due: Tomorrow</span></li>
+                        <li><a href="#">สร้าง IO จาก CUST-PO-800</a> <span class="task-due">Due: Today</span></li>
+                        <li><a href="#">สั่งซื้อ Chemical X (ใกล้หมด)</a> <span class="task-priority-high">ด่วน!</span></li>
+                    </ul>
+                     <a href="#" class="view-all-link">ดูงานทั้งหมด »</a>
+                </div>
+                <div class="dashboard-list-container list-half">
+                    <h3><i class="far fa-clock"></i> กิจกรรมล่าสุดในระบบ</h3>
+                    <ul class="activity-list" id="db-recent-activity">
+                        <li><span class="activity-user">Sales01</span> สร้าง QTN00128 ให้ บ. JKL <span class="activity-time">5 นาทีที่แล้ว</span></li>
+                        <li><span class="activity-user">Admin01</span> อนุมัติผู้ใช้งานใหม่: user_test <span class="activity-time">30 นาทีที่แล้ว</span></li>
+                        <li><span class="activity-user">Purchasing01</span> สร้าง SUP-PO-090 สั่งของ <span class="activity-time">1 ชั่วโมงที่แล้ว</span></li>
+                        <li><span class="activity-user">Account01</span> บันทึกการรับชำระ INV00777 <span class="activity-time">2 ชั่วโมงที่แล้ว</span></li>
+                    </ul>
+                    <a href="#" class="view-all-link">ดูกิจกรรมทั้งหมด »</a>
+                </div>
+            </div>
+
+            <!-- Quick Links/Actions Section -->
+            <div class="dashboard-section">
+                <h3><i class="fas fa-rocket"></i> ทางลัด (Quick Actions)</h3>
+                <div class="quick-actions-container">
+                    <button class="btn btn-primary quick-action-btn" data-nav="quotations" data-action="create"><i class="fas fa-plus-circle"></i> สร้างใบเสนอราคา</button>
+                    <button class="btn btn-primary quick-action-btn" data-nav="customer-pos" data-action="create"><i class="fas fa-file-import"></i> บันทึก PO ลูกค้า</button>
+                    <button class="btn btn-primary quick-action-btn" data-nav="inventory" data-action="receive"><i class="fas fa-truck-loading"></i> รับสินค้าเข้าสต็อก</button>
+                    <button class="btn btn-secondary quick-action-btn" data-nav="reports" data-report="sales_forecast"><i class="fas fa-eye"></i> ดู Sale Forecast</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Placeholder for other pages -->
+        <div id="reports-page" class="page-content hidden"><h2>Reports Content</h2></div>
+        <!-- ... more placeholder divs ... -->
+
+    </div>
+
+<style>
+    /* Additional styles for dashboard page (can be moved to style.css) */
+    .dashboard-cards-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px; /* Space between cards */
+        margin-bottom: 25px;
+    }
+    .dashboard-card {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        padding: 20px;
+        flex: 1 1 calc(25% - 20px); /* Aim for 4 cards per row, adjust for gap */
+        min-width: 220px; /* Minimum width for responsiveness */
+        display: flex;
+        align-items: center;
+    }
+    .dashboard-card .card-icon {
+        margin-right: 20px;
+        padding: 10px;
+        opacity: 0.7;
+    }
+    .dashboard-card .card-content h4 {
+        margin-top: 0;
+        margin-bottom: 5px;
+        font-size: 0.95em;
+        color: #555;
+        font-weight: 500;
+    }
+    .dashboard-card .card-content .card-value {
+        font-size: 2em;
+        font-weight: bold;
+        margin: 0 0 5px 0;
+    }
+    .dashboard-card .card-content small {
+        font-size: 0.8em;
+        color: #777;
+    }
+    .dashboard-card .card-link {
+        font-size: 0.85em;
+        color: #3498db;
+        text-decoration: none;
+        display: block;
+        margin-top: 8px;
+    }
+    .dashboard-card .card-link:hover {
+        text-decoration: underline;
+    }
+    /* Card specific colors */
+    .card-sales .card-icon { color: #27ae60; } .card-sales .card-value { color: #27ae60; }
+    .card-qtn .card-icon { color: #f39c12; } .card-qtn .card-value { color: #f39c12; }
+    .card-po .card-icon { color: #e74c3c; } .card-po .card-value { color: #e74c3c; }
+    .card-stock .card-icon { color: #8e44ad; } .card-stock .card-value { color: #8e44ad; }
+
+    .dashboard-section {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+    .dashboard-chart-container, .dashboard-list-container {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        padding: 20px;
+    }
+    .chart-half { flex: 1 1 calc(50% - 10px); min-width: 300px; }
+    .list-half { flex: 1 1 calc(50% - 10px); min-width: 300px; }
+
+    .dashboard-chart-container h3, .dashboard-list-container h3 {
+        margin-top: 0;
+        margin-bottom: 15px;
+        font-size: 1.1em;
+        color: #333;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+    .dashboard-list-container h3 i { margin-right: 8px; color: #3498db; }
+
+    .chart-placeholder {
+        width: 100%;
+        height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f9f9f9;
+        border: 1px solid #e0e0e0;
+        color: #888;
+    }
+    .task-list, .activity-list {
+        list-style: none;
+        padding-left: 0;
+        max-height: 200px; /* Limit height and make scrollable if needed */
+        overflow-y: auto;
+    }
+    .task-list li, .activity-list li {
+        padding: 8px 0;
+        border-bottom: 1px dashed #eee;
+        font-size: 0.9em;
+    }
+    .task-list li:last-child, .activity-list li:last-child {
+        border-bottom: none;
+    }
+    .task-list li a { color: #2980b9; text-decoration: none; }
+    .task-list li a:hover { text-decoration: underline; }
+    .task-due { float: right; font-size: 0.85em; color: #7f8c8d; }
+    .task-priority-high { float: right; font-size: 0.85em; color: #e74c3c; font-weight: bold;}
+
+    .activity-user { font-weight: bold; color: #34495e; }
+    .activity-time { float: right; font-size: 0.85em; color: #95a5a6; }
+
+    .view-all-link {
+        display: block;
+        text-align: right;
+        margin-top: 10px;
+        font-size: 0.9em;
+        color: #3498db;
+        text-decoration: none;
+    }
+    .view-all-link:hover { text-decoration: underline; }
+
+    .quick-actions-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    .quick-action-btn i { margin-right: 8px; }
+
+</style>
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.querySelector('.menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    const mainContent = document.querySelector('.main-content'); // Optional: to push content
+
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+            // Optional: if you want to create an overlay or prevent scrolling on main content when sidebar is open
+            // document.body.classList.toggle('sidebar-open-overlay');
+        });
+
+        // Optional: Close sidebar when clicking outside of it (on main content)
+        if (mainContent) {
+            mainContent.addEventListener('click', function() {
+                if (sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        }
+    }
+});
+$(document).ready(function() {
+    // Load sidebar
+    $('.sidebar').load('nav.html')
+
+    function initializePageContent(pageTarget) {
+        // Simulate getting user name - in real app, this comes from session/auth
+        var userName = "Admin User"; // Replace with actual user name
+        $('#welcome-message').text('Welcome, ' + userName + '!');
+
+        $('#page-title').text($('#nav-' + pageTarget).text() || 'Dashboard');
+        $('.page-content').addClass('hidden');
+        $('#' + pageTarget + '-page').removeClass('hidden');
+
+        if (pageTarget === 'dashboard') {
+            $('#dashboard-page').removeClass('hidden');
+            loadDashboardData(); // Load data for dashboard widgets
+        }
+    }
+
+    function loadDashboardData() {
+        // Simulate fetching data and updating dashboard widgets
+        // These would come from backend API calls in a real application
+
+        // Sales Forecast (Example)
+        $('#db-sales-forecast').text('฿' + (Math.floor(Math.random() * 500000) + 1000000).toLocaleString());
+        // Pending QTN
+        $('#db-pending-qtn').text(Math.floor(Math.random() * 10) + 1);
+        // Pending PO
+        $('#db-pending-po').text(Math.floor(Math.random() * 5) + 1);
+        // Low Stock
+        $('#db-low-stock').text(Math.floor(Math.random() * 5));
+
+        // --- Simulate Chart Data (if you were using Chart.js) ---
+        // Example:
+        // var salesCtx = document.getElementById('salesMonthlyChartCanvas')?.getContext('2d');
+        // if (salesCtx) {
+        //     new Chart(salesCtx, {
+        //         type: 'bar',
+        //         data: {
+        //             labels: ['มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.'],
+        //             datasets: [{
+        //                 label: 'ยอดขาย',
+        //                 data: [650000, 590000, 800000, 810000, 560000, 920000],
+        //                 backgroundColor: 'rgba(52, 152, 219, 0.7)',
+        //                 borderColor: 'rgba(52, 152, 219, 1)',
+        //                 borderWidth: 1
+        //             }]
+        //         },
+        //         options: { responsive: true, maintainAspectRatio: false }
+        //     });
+        // }
+        //
+        // var pipelineCtx = document.getElementById('pipelineStatusChartCanvas')?.getContext('2d');
+        // if (pipelineCtx) {
+        //    new Chart(pipelineCtx, {
+        //         type: 'doughnut',
+        //         data: {
+        //             labels: ['Reviewing', 'Waiting', 'Accepted', 'Lost'],
+        //             datasets: [{
+        //                 data: [30, 45, 15, 10], // Percentages
+        //                 backgroundColor: ['#f39c12', '#3498db', '#2ecc71', '#e74c3c'],
+        //             }]
+        //         },
+        //         options: { responsive: true, maintainAspectRatio: false }
+        //     });
+        // }
+
+        console.log("Dashboard data loaded (simulated).");
+    }
+
+
+    // --- Quick Actions & Card Links Navigation ---
+    // Using event delegation for elements that might be part of dashboard or other pages
+    $(document).on('click', '.quick-action-btn, .card-link', function(e){
+        e.preventDefault();
+        var targetNavId = $(this).data('nav'); // e.g., "quotations"
+        var targetAction = $(this).data('action'); // e.g., "create"
+        var targetReport = $(this).data('report'); // e.g., "sales_forecast"
+
+        if (targetNavId) {
+            // Find the nav link with data-page attribute matching targetNavId
+            var $navLink = $('.sidebar ul li a[data-page="' + targetNavId + '"]');
+            if ($navLink.length) {
+                $navLink.trigger('click'); // Simulate click on the nav link
+
+                // If there's a specific action, trigger it after page load (needs robust handling)
+                // This is a simplified example; real implementation might need to pass params
+                setTimeout(function() {
+                    if (targetAction === 'create' && targetNavId === 'quotations') {
+                        $('#btn-show-create-qtn').trigger('click');
+                    } else if (targetAction === 'create' && targetNavId === 'customer-pos') {
+                        $('#btn-show-create-customer-po').trigger('click');
+                    } else if (targetAction === 'receive' && targetNavId === 'inventory') {
+                        $('#btn-show-receive-stock').trigger('click');
+                    } else if (targetNavId === 'reports' && targetReport) {
+                        // Find the specific report link and click it
+                        $('.report-link[data-report-type="' + targetReport + '"]').trigger('click');
+                    }
+                    // Add more specific actions as needed
+                }, 100); // Small delay to allow page switch
+            } else {
+                alert("Navigation target '" + targetNavId + "' not found.");
+            }
+        }
+    });
+
+
+});
+</script>
+
+</body>
+</html>
